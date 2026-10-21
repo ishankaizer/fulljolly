@@ -1,0 +1,109 @@
+import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { units, type VowelUnit, type Word } from '../data/curriculum'
+import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
+import { useVoice } from '../lib/useVoice'
+import { Pip } from '../components/Pip'
+import { Confetti, Icon, LetterTile, Picture, RoundButton, shuffle, vowelColor } from '../components/ui'
+
+const everyPictured = units.flatMap((u) => u.families.flatMap((f) => f.words)).filter((w) => w.pic)
+
+/** Read the word (tap letters for help), then tap the picture that matches. */
+export function MatchPicture({
+  unit,
+  word,
+  familyWords,
+  intro,
+  onDone,
+}: {
+  unit: VowelUnit
+  word: Word
+  familyWords: Word[]
+  intro: boolean
+  onDone: (mistakes: number) => void
+}) {
+  const color = vowelColor[unit.vowel]
+  const { talking, say } = useVoice()
+  const [found, setFound] = useState(false)
+  const [wrong, setWrong] = useState<string[]>([])
+
+  const options = useMemo(() => {
+    // Rhyming pictures first (cat vs hat): reading the first letter is what counts.
+    const differentPic = (w: Word) => w.text !== word.text && w.pic !== word.pic
+    const near = shuffle(familyWords.filter((w) => w.pic && differentPic(w)))
+    const far = shuffle(everyPictured.filter((w) => differentPic(w) && !near.includes(w)))
+    const picked: Word[] = []
+    for (const w of [...near, ...far]) {
+      if (picked.length === 2) break
+      if (!picked.some((p) => p.pic === w.pic)) picked.push(w)
+    }
+    return shuffle([word, ...picked])
+  }, [word.text])
+
+  useEffect(() => {
+    if (intro) say(prompt('match-intro', 'Read the word. Then tap its picture!'))
+  }, [word.text])
+
+  const pick = (w: Word) => {
+    if (found) return
+    if (w.text === word.text) {
+      setFound(true)
+      sfx.right()
+      say(wordClip(word.text))
+    } else {
+      setWrong((ws) => [...ws, w.text])
+      sfx.tryAgain()
+      say(wordClip(w.text), pause(200), prompt('look-again', 'Look at the letters again'))
+    }
+  }
+
+  return (
+    <div className="activity match">
+      <div className="tile-row">
+        {word.text.split('').map((l, i) => (
+          <LetterTile key={i} letter={l} lit={found} onTap={() => say(sound(l))} />
+        ))}
+      </div>
+
+      <div className="match-options">
+        {options.map((w) => {
+          const isWrong = wrong.includes(w.text)
+          const isRight = found && w.text === word.text
+          return (
+            <motion.button
+              key={w.text}
+              type="button"
+              className={`match-card ${isRight ? 'match-right' : ''}`}
+              style={isRight ? { borderColor: color } : undefined}
+              onClick={() => pick(w)}
+              whileTap={{ scale: 0.92 }}
+              animate={
+                isWrong
+                  ? { x: [0, -12, 12, -8, 8, 0], opacity: 0.35 }
+                  : isRight
+                    ? { scale: [1, 1.18, 1.1] }
+                    : found
+                      ? { opacity: 0.3, scale: 0.9 }
+                      : {}
+              }
+              transition={{ duration: 0.45 }}
+              aria-label={w.text}
+            >
+              <Picture word={w} size={130} />
+              {isRight && <Confetti pieces={24} />}
+            </motion.button>
+          )
+        })}
+      </div>
+
+      <div className="activity-footer">
+        <Pip mood={found ? 'cheer' : wrong.length ? 'think' : talking ? 'talk' : 'idle'} size={120} />
+        {found && (
+          <RoundButton label="Next" color={color} onClick={() => onDone(wrong.length)} pulse={!talking}>
+            <span style={{ color: '#fff' }}>{Icon.next}</span>
+          </RoundButton>
+        )}
+      </div>
+    </div>
+  )
+}
