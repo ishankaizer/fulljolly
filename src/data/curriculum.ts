@@ -299,3 +299,12 @@ export function findFamily(id: string): { unit: VowelUnit; family: Family } | un
   }
   return undefined
 }
+
+export function familyOfWord(text: string): { unit: VowelUnit; family: Family } | undefined {
+  for (const unit of units) {
+    for (const family of unit.families) {
+      if (family.words.some((w) => w.text === text)) return { unit, family }
+    }
+  }
+  return undefined
+}

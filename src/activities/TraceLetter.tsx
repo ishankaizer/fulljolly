@@ -1,16 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { VowelUnit } from '../data/curriculum'
+import type { Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Confetti, Footer, Icon, Picture, RoundButton, fit, vowelColor } from '../components/ui'
+import { Confetti, Footer, Icon, Picture, RoundButton, fit } from '../components/ui'
 
 const STEP = 4 // sample the letter every 4px when checking the trace
 const FONT = 'Andika'
 
 /** Trace the letter with a finger while saying its sound, the way it is taught on paper. */
-export function TraceLetter({ unit, onDone }: { unit: VowelUnit; onDone: () => void }) {
-  const letter = unit.vowel
-  const color = vowelColor[letter]
+export function TraceLetter({
+  letter,
+  keyword,
+  color,
+  onDone,
+}: {
+  letter: string
+  keyword: Word
+  color: string
+  onDone: () => void
+}) {
   const { talking, say } = useVoice()
 
   const size = Math.round(Math.min(window.innerWidth - 72, window.innerHeight * 0.46, 380))
@@ -158,7 +166,7 @@ export function TraceLetter({ unit, onDone }: { unit: VowelUnit; onDone: () => v
       const mm = g.measureText(letter)
       g.fillText(letter, size / 2, (size + mm.actualBoundingBoxAscent - mm.actualBoundingBoxDescent) / 2)
       clear()
-      say(pause(200), sound(letter), pause(250), sound(letter), pause(300), word(unit.keyword.text))
+      say(pause(200), sound(letter), pause(250), sound(letter), pause(300), word(keyword.text))
     } else if (tooMuchInk || (drawn > total * 0.9 && stray > 0.5)) {
       // Scribbling all over rather than following the letter: start again, gently.
       sfx.tryAgain()
@@ -212,7 +220,7 @@ export function TraceLetter({ unit, onDone }: { unit: VowelUnit; onDone: () => v
           {done && <Confetti pieces={30} />}
         </div>
         <div className="trace-keyword">
-          <Picture word={unit.keyword} size={fit(84, 0.12)} />
+          <Picture word={keyword} size={fit(84, 0.12)} />
         </div>
       </div>
 

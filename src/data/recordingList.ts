@@ -32,7 +32,7 @@ const vowelHints: Record<string, string> = {
   u: "The short sound, like the start of “umbrella”. Not the letter name “you”.",
 }
 const holdable = new Set('fhlmnrsvz')
-const letterHint = (l: string) =>
+export const letterHint = (l: string) =>
   vowelHints[l] ??
   (holdable.has(l)
     ? `Make the sound and hold it for a moment, like “${l.repeat(3)}”. Not the letter name.`

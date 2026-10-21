@@ -1,27 +1,26 @@
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
-import { units, type VowelUnit, type Word } from '../data/curriculum'
+import { units, type Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Footer, fit, Confetti, Icon, LetterTile, Picture, RoundButton, hasPicture, pictureKey, shuffle, vowelColor } from '../components/ui'
+import { Footer, fit, Confetti, Icon, LetterTile, Picture, RoundButton, hasPicture, pictureKey, shuffle } from '../components/ui'
 
 const everyPictured = units.flatMap((u) => u.families.flatMap((f) => f.words)).filter(hasPicture)
 
 /** Read the word (tap letters for help), then tap the picture that matches. */
 export function MatchPicture({
-  unit,
+  color,
   word,
   familyWords,
   intro,
   onDone,
 }: {
-  unit: VowelUnit
+  color: string
   word: Word
   familyWords: Word[]
   intro: boolean
   onDone: (mistakes: number) => void
 }) {
-  const color = vowelColor[unit.vowel]
   const { talking, say } = useVoice()
   const [found, setFound] = useState(false)
   const [wrong, setWrong] = useState<string[]>([])

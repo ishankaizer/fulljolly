@@ -1,46 +1,31 @@
 import { motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-import { familyId, units } from '../data/curriculum'
-import { prompt } from '../lib/audio'
 import { go } from '../lib/router'
-import { currentProfile, getProfiles, loadProgress, switchProfile } from '../lib/settings'
+import { letterGroups } from '../data/letters'
+import { prompt } from '../lib/audio'
+import { loadProgress } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
 import { Pip } from '../components/Pip'
-import { ParentGate } from '../components/ParentGate'
-import { Stars, StaticTile, vowelColor } from '../components/ui'
-import { SWAP_LESSON } from './Lesson'
+import { Stars } from '../components/ui'
+import { TabShell } from '../components/TabShell'
+import { lessonOrder } from './Lesson'
 
-/** Home: one big Play button that carries on where the child left off, and a banner for each vowel. */
+/** Letters tab: lessons in colour-coded groups, and one big Play button that carries on where the child left off. */
 export function Home() {
-  const [, refresh] = useState(0)
-  const [picking, setPicking] = useState(false)
-  const [gate, setGate] = useState(false)
-  const progress = loadProgress()
-  const profiles = getProfiles()
-  const me = currentProfile()
-  const { talking, say } = useVoice()
+  return (
+    <TabShell tab="letters" title="Word Nest">
+      <Letters />
+    </TabShell>
+  )
+}
 
-  const allIds = units.flatMap((u) => u.families.map((f) => familyId(u.vowel, f.rime)))
-  const nextId = allIds.find((id) => !progress[id]) ?? SWAP_LESSON
-  const started = allIds.some((id) => progress[id])
+function Letters() {
+  const progress = loadProgress()
+  const { talking, say } = useVoice()
+  const nextId = lessonOrder.find((id) => !progress[id]) ?? lessonOrder[0]
+  const started = lessonOrder.some((id) => progress[id])
 
   return (
-    <div className="screen home">
-      <header className="home-top">
-        <h1 className="home-title">Word Nest</h1>
-        <div className="home-top-right">
-          <button
-            type="button"
-            className="avatar-btn"
-            onClick={() => profiles.length > 1 && setPicking(true)}
-            aria-label={`Playing as ${me.name}`}
-          >
-            {me.avatar}
-          </button>
-          <GrownUpsDoor onOpen={() => setGate(true)} />
-        </div>
-      </header>
-
+    <>
       <section className="home-hero">
         <button
           type="button"
@@ -65,112 +50,43 @@ export function Home() {
         </motion.button>
       </section>
 
-      <main className="banners">
-        {units.map((unit, i) => {
-          const ids = unit.families.map((f) => familyId(unit.vowel, f.rime))
-          const stars = ids.reduce((sum, id) => sum + (progress[id] ?? 0), 0)
-          return (
-            <motion.button
-              key={unit.vowel}
-              type="button"
-              className="banner"
-              style={{ ['--accent' as string]: vowelColor[unit.vowel] }}
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.1 + i * 0.07, type: 'spring', stiffness: 220, damping: 18 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={() => go(`/vowel/${unit.vowel}`)}
-              aria-label={`Letter ${unit.vowel}`}
-            >
-              <span className="banner-tile">{unit.vowel}</span>
-              <span className="banner-pic">{unit.keyword.pic}</span>
-              <span className="banner-info">
-                <span className="banner-chips">
-                  {unit.families.map((f, j) => (
-                    <i key={f.rime} className={progress[ids[j]] ? 'chip-done' : ''}>
-                      {f.rime}
-                    </i>
-                  ))}
-                </span>
-                <Stars count={Math.round(stars / ids.length)} size={20} />
+      <main className="groups">
+        {letterGroups.map((group, gi) => (
+          <motion.section
+            key={group.n}
+            className="group"
+            style={{ ['--accent' as string]: group.color }}
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 + gi * 0.1, type: 'spring', stiffness: 220, damping: 18 }}
+          >
+            <div className="group-head">
+              <span className="group-animal" aria-hidden>
+                {group.animals[0]}
               </span>
-            </motion.button>
-          )
-        })}
-
-        <motion.button
-          type="button"
-          className="banner banner-swap"
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, type: 'spring', stiffness: 220, damping: 18 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={() => go(`/lesson/${SWAP_LESSON}`)}
-          aria-label="Swap the middle sound"
-        >
-          <span className="swap-demo">
-            <StaticTile letter="c" size="md" />
-            <span className="swap-q">?</span>
-            <StaticTile letter="t" size="md" />
-          </span>
-          <span className="banner-pic">🐱</span>
-          <span className="banner-info">
-            <Stars count={progress[SWAP_LESSON] ?? 0} size={20} />
-          </span>
-        </motion.button>
-      </main>
-
-      {picking && (
-        <div className="gate-backdrop" role="dialog" aria-label="Who is playing?" onClick={() => setPicking(false)}>
-          <div className="gate" onClick={(e) => e.stopPropagation()}>
-            <div className="picker">
-              {profiles.map((p) => (
-                <button
-                  key={p.id}
+              <h2>Group {group.n}</h2>
+              <span className="group-animal" aria-hidden>
+                {group.animals[1]}
+              </span>
+            </div>
+            <div className="group-tiles">
+              {group.lessons.map((l) => (
+                <motion.button
+                  key={l.id}
                   type="button"
-                  className={`picker-item ${p.id === me.id ? 'picker-current' : ''}`}
-                  onClick={() => {
-                    switchProfile(p.id)
-                    setPicking(false)
-                    refresh((n) => n + 1)
-                  }}
-                  aria-label={p.name}
+                  className="letter-card"
+                  whileTap={{ scale: 0.93, y: 3 }}
+                  onClick={() => go(`/lesson/${l.id}`)}
+                  aria-label={`Letter ${l.label}`}
                 >
-                  <span className="picker-avatar">{p.avatar}</span>
-                  <span className="picker-name">{p.name}</span>
-                </button>
+                  <span className="letter-card-letter">{l.label}</span>
+                  <Stars count={progress[l.id] ?? 0} size={16} />
+                </motion.button>
               ))}
             </div>
-          </div>
-        </div>
-      )}
-      {gate && <ParentGate onPass={() => go('/grown-ups')} onCancel={() => setGate(false)} />}
-    </div>
-  )
-}
-
-/** Press and hold for 2 seconds to open the grown-ups page, so little fingers don't wander in. */
-function GrownUpsDoor({ onOpen }: { onOpen: () => void }) {
-  const timer = useRef<number>(undefined)
-  useEffect(() => () => window.clearTimeout(timer.current), [])
-  const start = () => {
-    timer.current = window.setTimeout(onOpen, 2000)
-  }
-  const cancel = () => window.clearTimeout(timer.current)
-  return (
-    <button
-      type="button"
-      className="grown-ups-door"
-      onPointerDown={start}
-      onPointerUp={cancel}
-      onPointerLeave={cancel}
-      onContextMenu={(e) => e.preventDefault()}
-      aria-label="Grown-ups: press and hold"
-    >
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z" />
-      </svg>
-    </button>
+          </motion.section>
+        ))}
+      </main>
+    </>
   )
 }
