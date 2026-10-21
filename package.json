@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fontsource/andika": "^5.3.0",
+    "@fontsource/noto-color-emoji": "^5.3.2",
     "framer-motion": "^14.5.0",
     "howler": "^2.2.4",
     "react": "^19.3.1",

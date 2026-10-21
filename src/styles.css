@@ -9,7 +9,7 @@
   --shadow: rgba(29, 43, 68, 0.18);
   --accent: #4cb5f5;
   --radius: 26px;
-  font-family: 'Andika', 'Comic Sans MS', system-ui, sans-serif;
+  font-family: 'Andika', 'Noto Color Emoji', 'Comic Sans MS', system-ui, sans-serif;
   color: var(--ink);
   -webkit-text-size-adjust: 100%;
 }
@@ -149,7 +149,7 @@ h2 {
 }
 .picture-emoji {
   line-height: 1;
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  font-family: 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
 }
 .picture-word {
   font-weight: 700;
