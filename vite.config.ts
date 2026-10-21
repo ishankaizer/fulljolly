@@ -7,6 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: false, // registered by hand in main.tsx so it can check for updates
       includeAssets: ['icon.svg'],
       workbox: {
         // Cache the app shell, fonts and every recorded sound so lessons work offline.
