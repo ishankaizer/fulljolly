@@ -23,7 +23,7 @@ export function VowelScreen({ vowel }: { vowel: Vowel }) {
   return (
     <div className="screen vowel" style={{ ['--accent' as string]: color }}>
       <header className="lesson-top">
-        <RoundButton label="Back to the map" onClick={() => go('/')}>
+        <RoundButton label="Back to the map" onClick={() => go('/words')}>
           <span style={{ color }}>{Icon.back}</span>
         </RoundButton>
       </header>

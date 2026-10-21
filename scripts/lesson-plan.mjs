@@ -26,6 +26,14 @@ out('| Tricky words | See and hear each word, find it by ear, build short senten
 out('| Sentences | Read four sentences, match three to pictures, build all four in order |')
 out()
 
+out('## Nursery: A to Z')
+out()
+out('The front page of the app: a card for every letter. Each letter page shows the capital and small letter, how to write')
+out('them (animated, with the stroke order), tracing, the sound, and words that start with it.')
+out()
+for (const a of C.alphabet) out(`- **${a.letter.toUpperCase()}${a.letter}**: ${a.words.join(', ')}${a.note ? ` (${a.note})` : ''}`)
+out()
+
 let n = 0
 C.stages.forEach((stage, i) => {
   out(`## Stage ${i + 1}: ${stage.title}`)

@@ -4,6 +4,13 @@ Phonics games that teach young children to read three-letter words (cat, cot, cu
 how Mama teaches: one vowel at a time, one word family at a time (‑at: bat, cat, hat… ‑am: ham, jam, ram…).
 Pip the bird guides every lesson.
 
+## The front page: A to Z
+
+The app opens on a card for every letter, A to Z (the Nursery syllabus). Each letter page shows the capital and small
+letter, **how to write them** (an animated demonstration with numbered strokes on handwriting lines), a tracing box that
+follows the real strokes, the sound, and words that start with it. Stroke data is in `src/data/glyphs.ts`; the word
+lists are in `src/data/alphabet.ts`. Every page has its own link, e.g. `/#/alphabet/a`.
+
 ## The course
 
 The whole course is data (`src/data/course.ts`) in eight stages, from letter sounds to sentences. The written plan is in

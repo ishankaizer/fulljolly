@@ -1,3 +1,4 @@
+import { alphabet } from '../data/alphabet'
 import { findFamily } from '../data/curriculum'
 import { findLesson, lessonWords, stages, type Lesson } from '../data/course'
 import { go } from '../lib/router'
@@ -55,6 +56,25 @@ export function Plan() {
             <strong>Stars.</strong> Three stars for a lesson with at most one slip, two for up to four, one otherwise.
             Playing again can only improve it.
           </p>
+        </section>
+
+        <section className="panel">
+          <h2>Nursery: A to Z</h2>
+          <p>
+            The front page of the app. A card for every letter. Each letter page shows the capital and small letter, how to
+            write them (animated, with the stroke order), tracing, the sound, and words that start with it.
+          </p>
+          <ol className="plan-list">
+            {alphabet.map((a) => (
+              <li key={a.letter} className="plan-item">
+                <button type="button" className="plan-name" onClick={() => go(`/alphabet/${a.letter}`)} aria-label={`Open ${a.letter.toUpperCase()}`}>
+                  {a.letter.toUpperCase()}
+                  {a.letter}
+                </button>
+                <span className="plan-detail">{a.words.join(', ')}</span>
+              </li>
+            ))}
+          </ol>
         </section>
 
         {stages.map((stage, si) => (

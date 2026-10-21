@@ -271,7 +271,7 @@ export const isLessonId = (id: string) => id === SWAP || isGameId(id) || Boolean
 const starsFor = (mistakes: number) => (mistakes <= 1 ? 3 : mistakes <= 4 ? 2 : 1)
 
 const backTo = (kind?: LessonData['kind']) =>
-  kind === 'sound' ? '/' : kind === 'pattern' ? '/words' : kind === 'tricky' || kind === 'sentences' ? '/sentences' : '/games'
+  kind === 'sound' ? '/sounds' : kind === 'pattern' || kind === 'tricky' || kind === 'sentences' ? '/words' : '/games'
 
 export function Lesson({ id }: { id: string }) {
   const family = id === SWAP ? undefined : findFamily(id)

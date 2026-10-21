@@ -66,6 +66,7 @@ for (const id of C.pathway) {
 const byPic = new Map()
 const lessonWordsAll = [...C.allWords]
 for (const g of C.groups) for (const l of g.lessons) if (l.keyword) lessonWordsAll.push(l.keyword)
+lessonWordsAll.push(...(C.libraryWords ?? []))
 for (const word of lessonWordsAll) {
   if (!word.pic) continue
   const set = byPic.get(word.pic) ?? new Set()
@@ -77,6 +78,18 @@ for (const word of lessonWordsAll) {
   }
 }
 for (const [pic, set] of byPic) if (set.size > 1) bad(`${pic} is the picture for ${[...set].join(' and ')}`)
+
+// 4b. every alphabet page has pictured words that start with its sound
+for (const page of C.alphabet ?? []) {
+  if (page.words.length < 2) bad(`alphabet ${page.letter}: needs at least two words`)
+  for (const t of page.words) {
+    const word = C.wordByText(t)
+    if (!word || !(word.pic || word.art)) bad(`alphabet ${page.letter}: "${t}" has no picture`)
+    const starts = page.letter === 'x' ? t.includes('x') : t.toLowerCase().startsWith(page.letter)
+    if (!starts) bad(`alphabet ${page.letter}: "${t}" does not ${page.letter === 'x' ? 'contain x' : 'start with ' + page.letter}`)
+  }
+}
+if ((C.alphabet ?? []).map((p) => p.letter).join('') !== 'abcdefghijklmnopqrstuvwxyz') bad('alphabet pages must run a to z')
 
 // 5. pathway holds every lesson exactly once
 const seen = new Set()

@@ -3,12 +3,12 @@ import { go } from '../lib/router'
 import { currentProfile, getProfiles, switchProfile } from '../lib/settings'
 import { ParentGate } from './ParentGate'
 
-export type Tab = 'sounds' | 'words' | 'sentences' | 'games' | 'books'
+export type Tab = 'abc' | 'sounds' | 'words' | 'games' | 'books'
 
 const tabs: { id: Tab; label: string; icon: string; path: string }[] = [
-  { id: 'sounds', label: 'Sounds', icon: '🔤', path: '/' },
+  { id: 'abc', label: 'A to Z', icon: '🔠', path: '/' },
+  { id: 'sounds', label: 'Sounds', icon: '🔤', path: '/sounds' },
   { id: 'words', label: 'Words', icon: '🐱', path: '/words' },
-  { id: 'sentences', label: 'Sentences', icon: '💬', path: '/sentences' },
   { id: 'games', label: 'Games', icon: '🎮', path: '/games' },
   { id: 'books', label: 'Books', icon: '📚', path: '/books' },
 ]

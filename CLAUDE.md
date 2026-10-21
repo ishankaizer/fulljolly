@@ -29,6 +29,9 @@ Commit messages describe the change in plain words, with the attribution lines t
 ## How it is built
 
 - React + Vite + TypeScript, static site, no server. Framer Motion for animation, Howler for audio.
+- The front page is the Nursery alphabet (`src/screens/AlphabetHome.tsx`, `AlphabetPage.tsx`): word lists in
+  `src/data/alphabet.ts`, handwriting strokes for all 52 letters in `src/data/glyphs.ts`. The tab bar is A to Z,
+  Sounds, Words (families, blends, tricky words, sentences), Games, Books.
 - The whole course is data in `src/data/course.ts` (stages, groups, lessons, sentences) with words in
   `src/data/vocab.ts` and `src/data/curriculum.ts`. Lessons are assembled from activities in `src/activities/` by
   `src/screens/Lesson.tsx`. A word is a list of sounds ("parts"), so `ship` is `sh-i-p`.

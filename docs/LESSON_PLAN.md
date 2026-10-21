@@ -16,6 +16,38 @@ every few lessons to revisit.
 | Tricky words | See and hear each word, find it by ear, build short sentences that use it |
 | Sentences | Read four sentences, match three to pictures, build all four in order |
 
+## Nursery: A to Z
+
+The front page of the app: a card for every letter. Each letter page shows the capital and small letter, how to write
+them (animated, with the stroke order), tracing, the sound, and words that start with it.
+
+- **Aa**: apple, alligator, ambulance, anchor, arrow
+- **Bb**: ball, banana, bus, bat, bed
+- **Cc**: cat, cap, car, cow, cake
+- **Dd**: dog, duck, drum, door, deer
+- **Ee**: egg, elephant, elf, envelope
+- **Ff**: fish, fan, frog, fox, fork
+- **Gg**: goat, girl, gift, grapes, guitar
+- **Hh**: hat, hen, horse, house, hand
+- **Ii**: insect, ink, iguana, infant
+- **Jj**: jam, jet, jug, jeep, juice
+- **Kk**: kite, key, king, kangaroo, koala
+- **Ll**: lion, leaf, lemon, lamp, leg
+- **Mm**: monkey, moon, milk, map, mug
+- **Nn**: net, nut, nap, nose, nine
+- **Oo**: octopus, ox, orange, otter
+- **Pp**: penguin, pig, pen, pot, pear
+- **Qq**: queen, quiz
+- **Rr**: rainbow, rat, rabbit, ring, robot
+- **Ss**: snake, sun, sock, star, sandwich
+- **Tt**: tennis, tiger, tent, tree, tap
+- **Uu**: umbrella, unicorn
+- **Vv**: van, vest, violin, volcano
+- **Ww**: web, watch, watermelon, wolf
+- **Xx**: box, fox, six (x is usually at the end of a word)
+- **Yy**: yellow, yo-yo, yam, yawn
+- **Zz**: zebra, zip, zero, zap
+
 ## Stage 1: Letter sounds
 
 **Goal:** Knows the sound of every letter, can trace it, and blends three-letter words.

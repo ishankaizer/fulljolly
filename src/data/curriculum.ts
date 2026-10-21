@@ -188,7 +188,7 @@ export const units: VowelUnit[] = [
           { text: 'pig', pic: '🐷' },
           { text: 'dig', pic: '⛏️' },
           { text: 'fig', art: 'fig' },
-          { text: 'big', pic: '🐘' },
+          { text: 'big', pic: '🐋' },
         ],
       },
     ],
@@ -286,7 +286,7 @@ export const vowelSwaps: SwapFrame[] = [
   { first: 'c', last: 't', words: [{ text: 'cat', pic: '🐱' }, { text: 'cot', art: 'cot' }, { text: 'cut', pic: '✂️' }] },
   { first: 'h', last: 't', words: [{ text: 'hat', pic: '🎩' }, { text: 'hit', pic: '🏏' }, { text: 'hot', pic: '🔥' }, { text: 'hut', pic: '🛖' }] },
   { first: 'p', last: 'n', words: [{ text: 'pan', pic: '🍳' }, { text: 'pen', pic: '🖊️' }, { text: 'pin', pic: '📌' }] },
-  { first: 'b', last: 'g', words: [{ text: 'bag', pic: '👜' }, { text: 'big', pic: '🐘' }, { text: 'bug', pic: '🐛' }] },
+  { first: 'b', last: 'g', words: [{ text: 'bag', pic: '👜' }, { text: 'big', pic: '🐋' }, { text: 'bug', pic: '🐛' }] },
   { first: 'p', last: 't', words: [{ text: 'pat', art: 'pat' }, { text: 'pet', pic: '🐹' }, { text: 'pot', pic: '🍲' }] },
   { first: 'b', last: 'd', words: [{ text: 'bed', pic: '🛏️' }, { text: 'bud', pic: '🌱' }] },
 ]

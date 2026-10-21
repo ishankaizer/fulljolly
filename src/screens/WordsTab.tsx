@@ -12,6 +12,7 @@ export function WordsTab() {
     <TabShell tab="words" title="Words">
       <Banners />
       <GroupGrid tab="words" />
+      <GroupGrid tab="sentences" />
     </TabShell>
   )
 }

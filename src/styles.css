@@ -1696,3 +1696,183 @@ h2 {
   font-size: 13px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
+
+/* ---------- A to Z ---------- */
+
+.abc-grid {
+  width: min(900px, 100%);
+  margin: 4px auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 12px;
+}
+.abc-card {
+  --accent: #4cb5f5;
+  background: #fff;
+  border-radius: 26px;
+  padding: 10px 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  box-shadow: 0 6px 0 var(--accent), 0 12px 20px var(--shadow);
+}
+.abc-card-letters {
+  font-size: clamp(40px, 8vw, 58px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.abc-page {
+  --accent: #4cb5f5;
+}
+.abc-title {
+  font-size: clamp(34px, 8vw, 52px);
+  margin: 0;
+  line-height: 1;
+}
+.abc-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+.abc-nav-letter {
+  font-size: 30px;
+  font-weight: 700;
+}
+.abc-stack {
+  width: min(720px, 100%);
+  margin: 10px auto 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.abc-panel {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 30px;
+  padding: 18px 20px 22px;
+  box-shadow: 0 10px 26px var(--shadow);
+}
+.abc-panel h2 {
+  font-size: 22px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+.abc-hint {
+  margin: -4px 0 12px;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+.abc-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 4vw, 28px);
+}
+.abc-pair-write {
+  align-items: flex-start;
+}
+.abc-pair figure {
+  margin: 0;
+  text-align: center;
+}
+.abc-pair figcaption {
+  margin-top: 6px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.abc-tile {
+  width: clamp(96px, 28vw, 150px);
+  height: clamp(110px, 32vw, 170px);
+  border-radius: 32px;
+  color: #fff;
+  font-size: clamp(70px, 20vw, 110px);
+  font-weight: 700;
+  line-height: 1;
+  padding-bottom: 0.1em;
+  box-shadow: 0 8px 0 rgba(29, 43, 68, 0.22), 0 14px 24px var(--shadow);
+}
+.abc-for {
+  text-align: center;
+  font-size: 22px;
+  margin: 14px 0 0;
+}
+.abc-words {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px clamp(10px, 3vw, 22px);
+}
+.abc-word {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.abc-word-text {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--consonant);
+}
+.abc-word-text b {
+  color: var(--accent);
+  font-size: 1.15em;
+}
+.abc-complete {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #12804a;
+  margin: 14px 0 0;
+}
+.abc-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.stroke-demo {
+  display: block;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: inset 0 0 0 3px #e3edf8;
+  padding: 4px;
+}
+.stroke-trace {
+  position: relative;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: inset 0 0 0 3px #e3edf8;
+  touch-action: none;
+}
+.stroke-trace canvas {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+}
+.stroke-trace-done {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #3ddc84;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 20px;
+}
+.stroke-trace-clear {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  font-size: 20px;
+  color: var(--ink-soft);
+}

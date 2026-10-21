@@ -1,4 +1,5 @@
 import { units, vowelSwaps, type Word } from './curriculum'
+import { alphabet } from './alphabet'
 import type { ArtId } from '../components/art'
 
 // Every word in the course. The three-letter words live in curriculum.ts (grouped by word family);
@@ -36,6 +37,18 @@ l-a-m-p 🪔      c-a-m-p 🏕️      g-i-f-t 🎁      m-i-l-k 🥛      m-a-s
 y-e-ll-ow 🟡    z-e-b-r-a 🦓    f-r-o-g 🐸
 `
 
+/** Picture words for the alphabet pages (looked at and heard, not blended): "text picture" pairs. */
+const libraryRows = `
+apple 🍎 alligator 🐊 ambulance 🚑 anchor ⚓ arrow 🏹
+banana 🍌 bus 🚌 cake 🎂 door 🚪 deer 🦌
+elephant 🐘 elf 🧝 envelope ✉️ horse 🐴 grapes 🍇 guitar 🎸 girl 👧
+ink 🖋️ iguana 🦎 infant 👶 juice 🧃 kite 🪁 key 🔑 kangaroo 🦘 koala 🐨
+lemon 🍋 nine 9️⃣ nose 👃 orange 🍊 otter 🦦 ox 🐂 pear 🍐
+rabbit 🐰 robot 🤖 sock 🧦 sandwich 🥪 tiger 🐯 unicorn 🦄 violin 🎻 volcano 🌋
+watch ⌚ watermelon 🍉 wolf 🐺 yo-yo 🪀 yawn 🥱 zero 0️⃣
+ball ⚽ duck 🦆 egg 🥚 house 🏠 insect 🐜 lion 🦁 monkey 🐒 octopus 🐙 penguin 🐧 rainbow 🌈 snake 🐍 tennis 🎾 umbrella ☂️
+`
+
 /** Reading words that have no picture: little words used inside sentences. */
 const plain = 'in on at an it up am as us if and but not get got let did had him run sit see chips'
 
@@ -69,6 +82,14 @@ for (const u of units) for (const f of u.families) for (const w of f.words) byTe
 for (const s of vowelSwaps) for (const w of s.words) if (!byText.has(w.text)) byText.set(w.text, w)
 for (const w of bank) if (!byText.has(w.text)) byText.set(w.text, w)
 
-/** Every word in the course, by its spelling. */
-export const wordByText = (text: string): Word | undefined => byText.get(text)
+/** Every reading word in the course, by its spelling. */
 export const allWords: Word[] = [...byText.values()]
+
+// The alphabet pages' own words come after, so they never join the pool the reading games draw from.
+const toks = libraryRows.trim().split(/\s+/)
+for (let i = 0; i + 1 < toks.length; i += 2) if (!byText.has(toks[i])) byText.set(toks[i], { text: toks[i], pic: toks[i + 1] })
+
+export const wordByText = (text: string): Word | undefined => byText.get(text)
+
+/** Every word shown on an alphabet page. */
+export const libraryWords: Word[] = [...new Set(alphabet.flatMap((p) => p.words))].map((t) => byText.get(t)!).filter(Boolean)

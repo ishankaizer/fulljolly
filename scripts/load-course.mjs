@@ -9,7 +9,7 @@ export async function loadCourse() {
   const out = join(mkdtempSync(join(tmpdir(), 'course-')), 'course.mjs')
   await build({
     stdin: {
-      contents: `export * from './src/data/course.ts'; export * from './src/data/vocab.ts'; export * from './src/data/graphemes.ts'; export * from './src/data/curriculum.ts'`,
+      contents: `export * from './src/data/course.ts'; export * from './src/data/vocab.ts'; export * from './src/data/graphemes.ts'; export * from './src/data/curriculum.ts'; export * from './src/data/alphabet.ts'`,
       resolveDir: process.cwd(),
       loader: 'ts',
     },
