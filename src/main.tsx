@@ -4,7 +4,6 @@ import { MotionConfig } from 'framer-motion'
 import { Howler } from 'howler'
 import '@fontsource/andika/latin-400.css'
 import '@fontsource/andika/latin-700.css'
-import './emoji.css'
 import './styles.css'
 import { App } from './App'
 

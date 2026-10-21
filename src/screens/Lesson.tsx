@@ -6,6 +6,7 @@ import { saveStars } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
 import { MeetFamily } from '../activities/MeetFamily'
 import { BlendSlide } from '../activities/BlendSlide'
+import { TraceLetter } from '../activities/TraceLetter'
 import { BuildWord } from '../activities/BuildWord'
 import { MatchPicture } from '../activities/MatchPicture'
 import { VowelSwap } from '../activities/VowelSwap'
@@ -20,6 +21,7 @@ type Step = { key: string; render: (next: (mistakes?: number) => void) => React.
 function familySteps(unit: VowelUnit, family: Family): Step[] {
   const steps: Step[] = [
     { key: 'meet', render: (next) => <MeetFamily unit={unit} family={family} onDone={() => next()} /> },
+    { key: 'trace', render: (next) => <TraceLetter unit={unit} onDone={() => next()} /> },
   ]
   // Blend every word in the family: lots of repetition is how blending sticks.
   family.words.forEach((w, i) =>
