@@ -43,6 +43,20 @@ Play lessons through in a real browser (Playwright is installed globally) on a t
 a small phone (360x640) and a phone on its side (844x390). Screens must fit without scrolling, and the Next button
 must stay reachable. Look at screenshots, not just exit codes.
 
+## Mama's brief (the teacher, from WhatsApp, 21 Oct)
+
+She wants a **library** organised by syllabus, where every page has its **own link** so the class WhatsApp group can be
+sent "class work" to follow.
+
+1. **Nursery:** pages for the alphabet, Aa to Zz. The "Aa" page shows capital A and small a, the sound, tracing, and some
+   words starting with the short sound of a. And so on for every letter.
+2. **Then the vowels and three-letter words:** the same pattern (sound, tracing), then short lines like stories:
+   "The cat sat on a mat."
+3. **After all the vowels:** stories made of three-letter words: "My dog is fat. She sat on my hat. My hat is flat."
+4. **Then the UKG syllabus** (topics not sent yet).
+5. **Test papers** she already has, to go into the library.
+6. The owner adds: record **voice recordings for every word, for consistency** (one voice throughout).
+
 ## Still to do (as agreed with the owner)
 
 - Record the sounds (the guided sound library is built; the owner's mother records them on her tablet).
