@@ -26,7 +26,7 @@ export function VowelSwap({
   const found = middle === target
 
   useEffect(() => {
-    if (intro) say(prompt('swap-intro', 'Change the middle sound to make the word.'), pause(200), wordClip(word.text))
+    if (intro) say(prompt('swap-intro'), pause(200), wordClip(word.text))
     else say(pause(300), wordClip(word.text))
   }, [word.text])
 
@@ -39,7 +39,7 @@ export function VowelSwap({
     } else {
       setMistakes((m) => m + 1)
       sfx.tryAgain()
-      say(sound(frame.first), sound(v), sound(frame.last), pause(300), prompt('try-again', 'Listen again'), pause(100), wordClip(word.text))
+      say(sound(frame.first), sound(v), sound(frame.last), pause(300), prompt('try-again'), pause(100), wordClip(word.text))
     }
   }
 
@@ -104,7 +104,7 @@ export function VowelSwap({
           <RoundButton
             label="Hear the instruction"
             color="#fff"
-            onClick={() => say(prompt('swap-intro', 'Change the middle sound to make the word.'), pause(200), wordClip(word.text))}
+            onClick={() => say(prompt('swap-intro'), pause(200), wordClip(word.text))}
           >
             <span style={{ color: vowelColor[target] }}>{Icon.speaker}</span>
           </RoundButton>

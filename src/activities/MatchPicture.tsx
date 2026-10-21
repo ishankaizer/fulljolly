@@ -40,7 +40,7 @@ export function MatchPicture({
   }, [word.text])
 
   useEffect(() => {
-    if (intro) say(prompt('match-intro', 'Read the word. Then tap its picture!'))
+    if (intro) say(prompt('match-intro'))
   }, [word.text])
 
   const pick = (w: Word) => {
@@ -52,7 +52,7 @@ export function MatchPicture({
     } else {
       setWrong((ws) => [...ws, w.text])
       sfx.tryAgain()
-      say(wordClip(w.text), pause(200), prompt('look-again', 'Look at the letters again'))
+      say(wordClip(w.text), pause(200), prompt('look-again'))
     }
   }
 
@@ -97,7 +97,7 @@ export function MatchPicture({
 
       <Footer mood={found ? 'cheer' : wrong.length ? 'think' : talking ? 'talk' : 'idle'}>
         {!found && (
-          <RoundButton label="Hear the instruction" onClick={() => say(prompt('match-intro', 'Read the word. Then tap its picture!'))}>
+          <RoundButton label="Hear the instruction" onClick={() => say(prompt('match-intro'))}>
             <span style={{ color }}>{Icon.speaker}</span>
           </RoundButton>
         )}

@@ -3,6 +3,7 @@ import { Home } from './screens/Home'
 import { VowelScreen } from './screens/VowelScreen'
 import { Lesson, SWAP_LESSON } from './screens/Lesson'
 import { GrownUps } from './screens/GrownUps'
+import { Studio } from './screens/Studio'
 import { Scenery } from './components/Scenery'
 import { findFamily, type Vowel } from './data/curriculum'
 
@@ -13,6 +14,7 @@ export function App() {
   if (page === 'vowel' && param && 'aeiou'.includes(param)) screen = <VowelScreen key={param} vowel={param as Vowel} />
   else if (page === 'lesson' && param && (param === SWAP_LESSON || findFamily(param))) screen = <Lesson key={param} id={param} />
   else if (page === 'grown-ups') screen = <GrownUps />
+  else if (page === 'studio') screen = <Studio />
   else screen = <Home />
 
   return (

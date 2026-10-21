@@ -40,7 +40,7 @@ export function BuildWord({
   }, [word.text])
 
   useEffect(() => {
-    if (intro) say(prompt('build-intro', 'Listen. What sound does it start with?'), pause(200), wordClip(word.text))
+    if (intro) say(prompt('build-intro'), pause(200), wordClip(word.text))
     else say(pause(300), wordClip(word.text))
   }, [word.text])
 
@@ -54,7 +54,7 @@ export function BuildWord({
       setWrong(letter)
       setMistakes((m) => m + 1)
       sfx.tryAgain()
-      say(sound(letter), pause(250), prompt('try-again', 'Listen again'), pause(100), wordClip(word.text))
+      say(sound(letter), pause(250), prompt('try-again'), pause(100), wordClip(word.text))
       window.setTimeout(() => setWrong(null), 600)
     }
   }

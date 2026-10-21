@@ -45,7 +45,7 @@ export function Home() {
         <button
           type="button"
           className="pip-button"
-          onClick={() => say(prompt('welcome', 'Hello! I am Pip. Press play to start!'))}
+          onClick={() => say(prompt('welcome'))}
           aria-label="Talk to Pip"
         >
           <Pip mood={talking ? 'talk' : 'idle'} size={150} />

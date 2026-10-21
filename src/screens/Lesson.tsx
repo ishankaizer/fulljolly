@@ -154,7 +154,7 @@ function LessonDone({
   const { say } = useVoice()
   useEffect(() => {
     sfx.cheer()
-    say(prompt('well-done', 'Well done! You are a super reader!'))
+    say(prompt('well-done'))
   }, [])
 
   return (

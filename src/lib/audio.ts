@@ -1,4 +1,6 @@
 import { Howl } from 'howler'
+import { promptLines } from '../data/prompts'
+import { userClipUrl } from './recordings'
 import { loadSettings } from './settings'
 
 // Recorded audio lives in src/audio/{sounds,rimes,words,prompts}/<name>.mp3 (or .m4a/.wav/.ogg).
@@ -34,14 +36,20 @@ export type Clip =
   | { kind: 'prompt'; id: string; text: string }
   | { kind: 'pause'; ms: number }
 
-function recordingFor(clip: Clip): string | undefined {
+function clipKey(clip: Clip): string | undefined {
   switch (clip.kind) {
-    case 'sound': return recordings.get(`sounds/${clip.letter}`)
-    case 'rime': return recordings.get(`rimes/${clip.rime}`)
-    case 'word': return recordings.get(`words/${clip.text}`)
-    case 'prompt': return recordings.get(`prompts/${clip.id}`)
+    case 'sound': return `sounds/${clip.letter}`
+    case 'rime': return `rimes/${clip.rime}`
+    case 'word': return `words/${clip.text}`
+    case 'prompt': return `prompts/${clip.id}`
     default: return undefined
   }
+}
+
+/** A recording made in the app wins over a bundled file, which wins over the built-in voice. */
+function recordingFor(clip: Clip): string | undefined {
+  const key = clipKey(clip)
+  return key ? (userClipUrl(key) ?? recordings.get(key)) : undefined
 }
 
 function fallbackText(clip: Clip): string {
@@ -72,7 +80,8 @@ function playFile(url: string, gen: number): Promise<void> {
   return new Promise((resolve) => {
     let howl = howls.get(url)
     if (!howl) {
-      howl = new Howl({ src: [url] })
+      // Recordings made in the app are stored as WAV behind blob: URLs that have no file extension.
+      howl = new Howl({ src: [url], ...(url.startsWith('blob:') ? { format: ['wav'] } : {}) })
       howls.set(url, howl)
     }
     if (gen !== generation) return resolve()
@@ -158,7 +167,7 @@ export async function play(...clips: Clip[]): Promise<boolean> {
 export const sound = (letter: string): Clip => ({ kind: 'sound', letter })
 export const word = (text: string): Clip => ({ kind: 'word', text })
 export const rime = (r: string, say?: string): Clip => ({ kind: 'rime', rime: r, say })
-export const prompt = (id: string, text: string): Clip => ({ kind: 'prompt', id, text })
+export const prompt = (id: string): Clip => ({ kind: 'prompt', id, text: promptLines[id] ?? id })
 export const pause = (ms: number): Clip => ({ kind: 'pause', ms })
 
 /** Short sound effects, synthesised so there are no extra files to manage. */

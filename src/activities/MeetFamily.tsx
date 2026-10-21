@@ -12,7 +12,7 @@ export function MeetFamily({ unit, family, onDone }: { unit: VowelUnit; family: 
   const ending = rime(family.rime, family.say)
   // Narrow phones fit five pictures per row, so nine words take two rows instead of three.
   const pictureSize = Math.min(fit(84, 0.105), Math.floor((window.innerWidth - 60) / 5.2))
-  const intro = () => say(prompt('meet-family', 'These words all end with'), pause(150), ending, pause(500), ending)
+  const intro = () => say(prompt('meet-family'), pause(150), ending, pause(500), ending)
 
   useEffect(() => {
     intro()

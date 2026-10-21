@@ -28,7 +28,7 @@ export function TraceLetter({ unit, onDone }: { unit: VowelUnit; onDone: () => v
   const [wobble, setWobble] = useState(0)
 
   const intro = () =>
-    say(prompt('trace-intro', 'Trace the letter with your finger. Say its sound!'), pause(250), sound(letter))
+    say(prompt('trace-intro'), pause(250), sound(letter))
 
   // Draw the dotted guide letter and work out which pixels belong to it.
   useEffect(() => {
@@ -164,7 +164,7 @@ export function TraceLetter({ unit, onDone }: { unit: VowelUnit; onDone: () => v
       sfx.tryAgain()
       setWobble((w) => w + 1)
       clear()
-      say(prompt('trace-again', 'Follow the dotted line'))
+      say(prompt('trace-again'))
     }
   }
 

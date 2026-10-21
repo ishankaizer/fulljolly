@@ -110,6 +110,9 @@ export function GrownUps() {
             Real recordings always sound better than the built-in voice, especially for letter sounds. Every recording
             added to the app replaces the built-in voice for that sound or word.
           </p>
+          <button type="button" className="text-btn big" onClick={() => go('/studio')}>
+            Open the recording studio
+          </button>
           <Checklist title="Letter sounds" total={letters.length} missing={missingSounds} />
           <Checklist title="Word endings" total={allRimes.length} missing={missingRimes.map((f) => `-${f.rime}`)} />
           <Checklist title="Words" total={allWords.length} missing={missingWords} />

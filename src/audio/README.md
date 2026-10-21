@@ -12,3 +12,12 @@ anything without one is spoken by the device's built-in voice.
 
 `.mp3`, `.m4a`, `.wav` and `.ogg` all work. Keep each clip short with no silence at the start or end.
 The grown-ups page in the app lists which recordings are still missing.
+
+## Recording in the app
+
+The easiest way to fill this folder is the recording studio: Grown-ups page, then "Open the recording studio".
+Recordings made there work immediately on that tablet. To ship them to every device:
+
+1. In the studio, tap **Save a backup**.
+2. Run `node scripts/unpack-recordings.mjs word-nest-recordings.json`. This writes the files into the folders above.
+3. Commit and deploy.

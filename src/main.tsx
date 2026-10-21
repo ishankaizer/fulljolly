@@ -6,6 +6,7 @@ import '@fontsource/andika/latin-400.css'
 import '@fontsource/andika/latin-700.css'
 import './styles.css'
 import { App } from './App'
+import { loadRecordings } from './lib/recordings'
 
 // Phones and tablets keep sound off until the first touch. Wake both the audio
 // player and the built-in voice on that first touch so later lessons can talk.
@@ -21,6 +22,8 @@ window.addEventListener(
   },
   { once: true },
 )
+
+void loadRecordings()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

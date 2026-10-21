@@ -35,7 +35,7 @@ export function BlendSlide({
   const done = useRef(false)
 
   useEffect(() => {
-    if (intro) say(prompt('blend-intro', 'Slide the ball under the letters. Say each sound!'))
+    if (intro) say(prompt('blend-intro'))
   }, []) // only on arrival
 
   // Where along the track (in px from the start) each letter sits.
@@ -182,7 +182,7 @@ export function BlendSlide({
             </RoundButton>
           </>
         ) : (
-          <RoundButton label="Hear the instruction" onClick={() => say(prompt('blend-intro', 'Slide the ball under the letters. Say each sound!'))}>
+          <RoundButton label="Hear the instruction" onClick={() => say(prompt('blend-intro'))}>
             <span style={{ color }}>{Icon.speaker}</span>
           </RoundButton>
         )}
