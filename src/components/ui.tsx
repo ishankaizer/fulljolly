@@ -74,6 +74,9 @@ export function Picture({ word, size = 160, caption = false }: { word: Word; siz
   )
 }
 
+/** Picture size that shrinks on short screens so a whole activity fits without scrolling. */
+export const fit = (max: number, share = 0.22) => Math.round(Math.min(max, window.innerHeight * share))
+
 export const hasPicture = (w: Word) => Boolean(w.pic || w.art)
 export const pictureKey = (w: Word) => w.pic ?? w.art ?? w.text
 
@@ -94,7 +97,7 @@ export function WordText({ text, size = 30 }: { text: string; size?: number }) {
 export function Footer({ mood, children }: { mood: Mood; children?: ReactNode }) {
   return (
     <div className="activity-footer">
-      <Pip mood={mood} size={110} />
+      <Pip mood={mood} size={fit(110, 0.15)} />
       <div className="footer-actions">{children}</div>
     </div>
   )

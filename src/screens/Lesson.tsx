@@ -10,7 +10,7 @@ import { BuildWord } from '../activities/BuildWord'
 import { MatchPicture } from '../activities/MatchPicture'
 import { VowelSwap } from '../activities/VowelSwap'
 import { Pip } from '../components/Pip'
-import { Confetti, Icon, RoundButton, Stars, hasPicture, shuffle, vowelColor } from '../components/ui'
+import { Confetti, Icon, RoundButton, Stars, fit, hasPicture, shuffle, vowelColor } from '../components/ui'
 import { go } from '../lib/router'
 
 export const SWAP_LESSON = 'swap'
@@ -159,7 +159,7 @@ function LessonDone({
     <div className="activity done">
       <Confetti pieces={70} />
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 10 }}>
-        <Pip mood="cheer" size={200} />
+        <Pip mood="cheer" size={fit(200, 0.28)} />
       </motion.div>
       <motion.div
         initial={{ y: 30, opacity: 0 }}

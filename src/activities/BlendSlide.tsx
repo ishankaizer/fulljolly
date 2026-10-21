@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { VowelUnit, Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Confetti, Footer, Icon, LetterTile, Picture, RoundButton, vowelColor } from '../components/ui'
+import { Confetti, Footer, fit, Icon, LetterTile, Picture, RoundButton, vowelColor } from '../components/ui'
 
 /**
  * Slide the ball under the letters: each sound plays as the ball passes it,
@@ -109,7 +109,7 @@ export function BlendSlide({
           animate={revealed ? { scale: [1, 1.3, 1.1], rotate: [0, -8, 6, 0] } : { scale: 1 }}
           transition={{ duration: 0.6 }}
         >
-          <Picture word={word} size={170} />
+          <Picture word={word} size={fit(170)} />
           {revealed && <Confetti pieces={28} />}
         </motion.div>
       </div>

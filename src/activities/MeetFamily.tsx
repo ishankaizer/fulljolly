@@ -3,13 +3,15 @@ import { useEffect } from 'react'
 import type { Family, VowelUnit } from '../data/curriculum'
 import { pause, prompt, rime, word } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Footer, Icon, Picture, RoundButton, StaticTile, WordText, hasPicture, vowelColor } from '../components/ui'
+import { Footer, fit, Icon, Picture, RoundButton, StaticTile, WordText, hasPicture, vowelColor } from '../components/ui'
 
 /** "This is the -at family": hear the shared ending, then meet every word with its picture. */
 export function MeetFamily({ unit, family, onDone }: { unit: VowelUnit; family: Family; onDone: () => void }) {
   const { talking, say } = useVoice()
   const color = vowelColor[unit.vowel]
   const ending = rime(family.rime, family.say)
+  // Narrow phones fit five pictures per row, so nine words take two rows instead of three.
+  const pictureSize = Math.min(fit(84, 0.105), Math.floor((window.innerWidth - 60) / 5.2))
   const intro = () => say(prompt('meet-family', 'These words all end with'), pause(150), ending, pause(500), ending)
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export function MeetFamily({ unit, family, onDone }: { unit: VowelUnit; family: 
             onClick={() => say(word(w.text))}
             aria-label={w.text}
           >
-            <Picture word={w} size={84} />
+            <Picture word={w} size={pictureSize} />
             <WordText text={w.text} size={28} />
           </motion.button>
         ))}

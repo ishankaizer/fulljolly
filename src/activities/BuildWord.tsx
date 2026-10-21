@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Family, VowelUnit, Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Footer, Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, shuffle, vowelColor } from '../components/ui'
+import { Footer, fit, Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, shuffle, vowelColor } from '../components/ui'
 
 const spareConsonants = 'bcdfghjklmnprstvwz'.split('')
 
@@ -70,7 +70,7 @@ export function BuildWord({
               transition={{ type: 'spring', stiffness: 220, damping: 12 }}
               style={{ position: 'relative' }}
             >
-              <Picture word={word} size={150} />
+              <Picture word={word} size={fit(150)} />
               <Confetti pieces={24} />
             </motion.div>
           )}

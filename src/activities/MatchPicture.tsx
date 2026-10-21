@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { units, type VowelUnit, type Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Footer, Confetti, Icon, LetterTile, Picture, RoundButton, hasPicture, pictureKey, shuffle, vowelColor } from '../components/ui'
+import { Footer, fit, Confetti, Icon, LetterTile, Picture, RoundButton, hasPicture, pictureKey, shuffle, vowelColor } from '../components/ui'
 
 const everyPictured = units.flatMap((u) => u.families.flatMap((f) => f.words)).filter(hasPicture)
 
@@ -88,7 +88,7 @@ export function MatchPicture({
               transition={{ duration: 0.45 }}
               aria-label={w.text}
             >
-              <Picture word={w} size={130} />
+              <Picture word={w} size={fit(130, 0.18)} />
               {isRight && <Confetti pieces={24} />}
             </motion.button>
           )

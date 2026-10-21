@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import type { SwapFrame, Vowel, Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Footer, Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, vowelColor } from '../components/ui'
+import { Footer, fit, Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, vowelColor } from '../components/ui'
 
 const vowels: Vowel[] = ['a', 'e', 'i', 'o', 'u']
 
@@ -53,7 +53,7 @@ export function VowelSwap({
           whileTap={{ scale: 0.94 }}
           aria-label="Hear the word"
         >
-          <Picture word={{ text: '?', pic: word.pic, art: word.art }} size={150} />
+          <Picture word={{ text: '?', pic: word.pic, art: word.art }} size={fit(150)} />
           {found && <Confetti pieces={28} />}
         </motion.button>
       </div>

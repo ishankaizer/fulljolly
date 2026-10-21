@@ -82,6 +82,7 @@ h2 {
 }
 
 .screen {
+  overflow-x: clip;
   min-height: 100%;
   min-height: 100dvh;
   display: flex;
@@ -104,9 +105,9 @@ h2 {
   position: relative;
 }
 .tile-lg {
-  width: clamp(72px, 19vw, 118px);
-  height: clamp(86px, 23vw, 136px);
-  font-size: clamp(54px, 14vw, 92px);
+  width: clamp(60px, min(19vw, 14vh), 118px);
+  height: clamp(72px, min(23vw, 17vh), 136px);
+  font-size: clamp(44px, min(14vw, 11vh), 92px);
   padding-bottom: 0.1em;
 }
 .tile-md {
@@ -289,7 +290,7 @@ h2 {
 .banners {
   width: min(900px, 100%);
   margin: 0 auto;
-  padding-bottom: 150px;
+  padding-bottom: 110px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   gap: 16px;
@@ -482,9 +483,9 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  gap: 18px;
-  margin: 12px auto calc(clamp(40px, 9vh, 90px));
-  padding: 22px 20px 10px;
+  gap: clamp(8px, 2vh, 18px);
+  margin: 10px auto clamp(24px, 6vh, 70px);
+  padding: clamp(10px, 2.4vh, 22px) 20px 8px;
   width: min(880px, 100%);
   border-radius: 40px;
   background: rgba(255, 255, 255, 0.62);
@@ -497,7 +498,11 @@ h2 {
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  min-height: 120px;
+  min-height: clamp(84px, 14vh, 120px);
+}
+.activity-footer {
+  position: sticky;
+  bottom: 0;
 }
 .footer-actions {
   display: flex;
@@ -541,7 +546,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 22px 26px;
+  padding: clamp(10px, 2.4vh, 22px) 26px;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 36px;
   border: 6px solid;
@@ -557,7 +562,7 @@ h2 {
 /* blend slide */
 .blend-stage,
 .build-stage {
-  min-height: 190px;
+  min-height: clamp(110px, 24vh, 190px);
   display: grid;
   place-items: center;
   position: relative;
@@ -589,7 +594,7 @@ h2 {
   pointer-events: none;
 }
 .track-dots > span {
-  width: clamp(72px, 19vw, 118px);
+  width: clamp(60px, min(19vw, 14vh), 118px);
   display: grid;
   place-items: center;
 }
@@ -622,8 +627,8 @@ h2 {
 
 /* build */
 .slot {
-  width: clamp(72px, 19vw, 118px);
-  height: clamp(86px, 23vw, 136px);
+  width: clamp(60px, min(19vw, 14vh), 118px);
+  height: clamp(72px, min(23vw, 17vh), 136px);
   border-radius: 20px;
   border: 5px dashed;
   background: rgba(255, 255, 255, 0.45);
@@ -642,11 +647,10 @@ h2 {
   display: flex;
   gap: clamp(14px, 4vw, 28px);
   justify-content: center;
-  min-height: 140px;
   align-items: center;
 }
 .choice-gap {
-  width: clamp(72px, 19vw, 118px);
+  width: clamp(60px, min(19vw, 14vh), 118px);
 }
 
 /* match */
@@ -787,6 +791,76 @@ h2 {
     width: 70px;
     height: 82px;
     font-size: 52px;
+  }
+}
+
+/* Phones held sideways and very short screens: no mascot in the footer, smaller buttons. */
+@media (max-height: 520px) {
+  .round-btn {
+    width: 56px;
+    height: 56px;
+  }
+  .round-btn svg {
+    width: 28px;
+    height: 28px;
+  }
+  .round-btn-xl {
+    width: 84px;
+    height: 84px;
+  }
+  .lesson-top {
+    gap: 10px;
+  }
+  .activity {
+    margin: 6px auto 8px;
+    padding: 8px 14px 4px;
+    gap: 6px;
+    border-radius: 28px;
+  }
+  .activity-footer {
+    position: absolute;
+    right: 14px;
+    bottom: 8px;
+    width: auto;
+    min-height: 0;
+  }
+  .activity-footer > svg {
+    display: none;
+  }
+  .footer-actions {
+    padding-bottom: 0;
+  }
+  .blend-stage,
+  .build-stage {
+    min-height: 0;
+  }
+  .blend-board {
+    gap: 12px;
+  }
+  .track {
+    height: 56px;
+  }
+  .ball {
+    width: 46px;
+    height: 46px;
+  }
+  .meet-words {
+    gap: 8px 14px;
+  }
+  .family-dash {
+    font-size: 44px;
+  }
+  .screen {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+@media (max-width: 420px) {
+  .meet-word .word-text {
+    font-size: 22px !important;
+  }
+  .meet-words {
+    gap: 8px 10px;
   }
 }
 
