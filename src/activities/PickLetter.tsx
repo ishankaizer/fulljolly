@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import type { LetterLesson } from '../data/letters'
+import type { Lesson } from '../data/course'
 import { pause, prompt, sfx, sound } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
 import { Confetti, Footer, Icon, LetterTile, RoundButton, fit } from '../components/ui'
@@ -13,8 +13,8 @@ export function PickLetter({
   intro,
   onDone,
 }: {
-  target: LetterLesson
-  options: LetterLesson[]
+  target: Lesson
+  options: Lesson[]
   color: string
   intro: boolean
   onDone: (mistakes: number) => void
@@ -23,22 +23,22 @@ export function PickLetter({
   const [found, setFound] = useState(false)
   const [wrong, setWrong] = useState<string[]>([])
 
-  const hear = () => say(sound(target.soundOf))
+  const hear = () => say(sound(target.soundOf!))
   useEffect(() => {
-    if (intro) say(prompt('pick-intro'), pause(250), sound(target.soundOf))
-    else say(pause(300), sound(target.soundOf))
+    if (intro) say(prompt('pick-intro'), pause(250), sound(target.soundOf!))
+    else say(pause(300), sound(target.soundOf!))
   }, [target.id])
 
-  const pick = (o: LetterLesson) => {
+  const pick = (o: Lesson) => {
     if (found) return
     if (o.id === target.id) {
       setFound(true)
       sfx.right()
-      say(sound(target.soundOf))
+      say(sound(target.soundOf!))
     } else {
       setWrong((w) => [...w, o.id])
       sfx.tryAgain()
-      say(sound(o.soundOf), pause(250), prompt('try-again'), pause(100), sound(target.soundOf))
+      say(sound(o.soundOf!), pause(250), prompt('try-again'), pause(100), sound(target.soundOf!))
     }
   }
 

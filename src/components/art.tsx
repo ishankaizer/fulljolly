@@ -1,9 +1,42 @@
 import type { ReactNode } from 'react'
 
 // Hand-drawn pictures for words that have no good emoji. Same flat, round style as Pip.
-export type ArtId = 'mat' | 'pat' | 'fat' | 'cot'
+export type ArtId = 'mat' | 'pat' | 'fat' | 'cot' | 'jug' | 'fan' | 'fig'
 
 const art: Record<ArtId, ReactNode> = {
+  jug: (
+    <g>
+      <ellipse cx="46" cy="90" rx="30" ry="5" fill="rgba(29,43,68,.12)" />
+      <path d="M26 34h40q8 4 8 14v32q0 8-8 8H34q-8 0-8-8z" fill="#4cb5f5" />
+      <path d="M26 34q0-12 20-12t20 12z" fill="#2f95d6" />
+      <path d="M74 44q22 2 20 24t-20 14" stroke="#2f95d6" strokeWidth="9" fill="none" strokeLinecap="round" />
+      <ellipse cx="44" cy="60" rx="12" ry="18" fill="#fff" opacity=".28" />
+      <path d="M34 18q12-8 24 0" stroke="#2f95d6" strokeWidth="6" fill="none" strokeLinecap="round" />
+    </g>
+  ),
+  fan: (
+    <g>
+      <rect x="40" y="76" width="20" height="10" rx="4" fill="#52627d" />
+      <rect x="46" y="58" width="8" height="22" fill="#52627d" />
+      <circle cx="50" cy="38" r="32" fill="#e8f4ff" stroke="#52627d" strokeWidth="5" />
+      <g fill="#4cb5f5">
+        <path d="M50 38q-6-24 6-26q8 8-6 26z" />
+        <path d="M50 38q22-10 28 2q-4 10-28-2z" />
+        <path d="M50 38q-14 20-26 14q-2-10 26-14z" />
+      </g>
+      <circle cx="50" cy="38" r="6" fill="#52627d" />
+    </g>
+  ),
+  fig: (
+    <g>
+      <ellipse cx="50" cy="92" rx="28" ry="5" fill="rgba(29,43,68,.12)" />
+      <path d="M50 26q-26 6-26 38q0 24 26 28q26-4 26-28q0-32-26-38z" fill="#8a5cd0" />
+      <path d="M50 26q-14 8-14 36q0 20 14 30q-18-4-18-30q0-26 18-36z" fill="#6f3fb8" opacity=".6" />
+      <ellipse cx="62" cy="56" rx="6" ry="14" fill="#fff" opacity=".25" />
+      <path d="M50 26q0-10 6-14" stroke="#5a8a2a" strokeWidth="5" fill="none" strokeLinecap="round" />
+      <path d="M56 14q16-8 22 4q-12 8-22-4z" fill="#6fcf3a" />
+    </g>
+  ),
   cot: (
     <g>
       <rect x="10" y="30" width="80" height="48" rx="8" fill="#ffe9b8" stroke="#d99a3a" strokeWidth="4" />

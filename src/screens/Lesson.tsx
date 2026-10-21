@@ -1,22 +1,34 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
-import { familyId, familyOfWord, findFamily, units, vowelSwaps, type Family, type VowelUnit } from '../data/curriculum'
-import { games, isGameId } from '../data/games'
+import { familyOfWord, findFamily, vowelSwaps, type Family, type VowelUnit, type Word } from '../data/curriculum'
 import {
-  blendableWords,
-  findLetterLesson,
-  letterLessons,
-  letterWords,
-  type LetterGroup,
-  type LetterLesson,
-} from '../data/letters'
+  allLessons,
+  findLesson,
+  lessonWords,
+  pathway,
+  soundLessons,
+  SWAP,
+  traceLetters,
+  type Group,
+  type Lesson as LessonData,
+  type Sentence,
+} from '../data/course'
+import { games, isGameId } from '../data/games'
 import { letterHint } from '../data/recordingList'
+import { allWords, trickyList, wordByText } from '../data/vocab'
 import { prompt, sfx, sound } from '../lib/audio'
 import { saveStars } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
 import { MeetFamily } from '../activities/MeetFamily'
 import { BlendSlide } from '../activities/BlendSlide'
 import { BlendingCard } from '../activities/BlendingCard'
+import { BlendIntro } from '../activities/BlendIntro'
+import { BuildTiles } from '../activities/BuildTiles'
+import { PickWord } from '../activities/PickWord'
+import { TrickyWord } from '../activities/TrickyWord'
+import { SentenceRead } from '../activities/SentenceRead'
+import { SentencePick } from '../activities/SentencePick'
+import { SentenceBuild } from '../activities/SentenceBuild'
 import { TraceLetter } from '../activities/TraceLetter'
 import { SoundIntro } from '../activities/SoundIntro'
 import { PickLetter } from '../activities/PickLetter'
@@ -27,9 +39,23 @@ import { Pip } from '../components/Pip'
 import { Confetti, Icon, Picture, RoundButton, Stars, fit, hasPicture, shuffle, vowelColor } from '../components/ui'
 import { go } from '../lib/router'
 
-export const SWAP_LESSON = 'swap'
+export const SWAP_LESSON = SWAP
 
 type Step = { key: string; render: (next: (mistakes?: number) => void) => React.ReactNode }
+
+const pictured = (words: Word[]) => words.filter(hasPicture)
+const allSentences: Sentence[] = allLessons.flatMap((l) => l.sentences ?? [])
+
+/** Two other written words that look a little like the one being asked for. */
+function wordOptions(target: Word, near: Word[]): Word[] {
+  const pool = [
+    ...shuffle(near.filter((w) => w.text !== target.text)),
+    ...shuffle(allWords.filter((w) => hasPicture(w) && Math.abs(w.text.length - target.text.length) <= 1 && w.text !== target.text)),
+  ]
+  const picked: Word[] = []
+  for (const w of pool) if (picked.length < 2 && !picked.some((p) => p.text === w.text)) picked.push(w)
+  return shuffle([target, ...picked])
+}
 
 function familySteps(unit: VowelUnit, family: Family): Step[] {
   const steps: Step[] = [
@@ -69,21 +95,43 @@ function familySteps(unit: VowelUnit, family: Family): Step[] {
   return steps
 }
 
-/** One sound: meet it, trace it, pick it out, then blend real words that use it. */
-function letterSteps(group: LetterGroup, lesson: LetterLesson): Step[] {
-  const color = group.color
-  const steps: Step[] = [
-    { key: 'intro', render: (next) => <SoundIntro lesson={lesson} color={color} onDone={() => next()} /> },
-  ]
-  lesson.letters.forEach((l) =>
+/** Word practice shared by sound and blend lessons: blend, build from tiles, match, find the written word. */
+function wordSteps(color: string, words: Word[], opts: { builds: number; matches: number; picks: number }): Step[] {
+  const steps: Step[] = []
+  if (!words.length) return steps
+  steps.push({ key: 'blending', render: (next) => <BlendingCard words={words.slice(0, 3)} color={color} onDone={() => next()} /> })
+  words.slice(0, opts.builds).forEach((w, i) =>
+    steps.push({ key: `tiles-${w.text}`, render: (next) => <BuildTiles word={w} color={color} intro={i === 0} onDone={next} /> }),
+  )
+  words.slice(0, opts.matches).forEach((w, i) =>
     steps.push({
-      key: `trace-${l}`,
-      render: (next) => <TraceLetter letter={l} keyword={lesson.keyword} color={color} onDone={() => next()} />,
+      key: `match-${w.text}`,
+      render: (next) => <MatchPicture color={color} word={w} familyWords={words} intro={i === 0} onDone={next} />,
     }),
   )
+  if (words.length >= 3)
+    words.slice(0, opts.picks).forEach((w, i) => {
+      const options = wordOptions(w, words)
+      steps.push({
+        key: `pick-${w.text}`,
+        render: (next) => <PickWord target={w} options={options} color={color} intro={i === 0} onDone={next} />,
+      })
+    })
+  return steps
+}
 
-  const at = letterLessons.indexOf(lesson)
-  const others = at >= 2 ? letterLessons.slice(0, at) : letterLessons.filter((l) => l !== lesson)
+/** One sound: meet it, trace it, pick it out, then blend real words that use it. */
+function soundSteps(group: Group, lesson: LessonData): Step[] {
+  const color = group.color
+  const steps: Step[] = [{ key: 'intro', render: (next) => <SoundIntro lesson={lesson} color={color} onDone={() => next()} /> }]
+  for (const l of traceLetters(lesson))
+    steps.push({
+      key: `trace-${l}`,
+      render: (next) => <TraceLetter letter={l} keyword={lesson.keyword!} color={color} onDone={() => next()} />,
+    })
+
+  const at = soundLessons.indexOf(lesson)
+  const others = (at >= 2 ? soundLessons.slice(0, at) : soundLessons.filter((l) => l !== lesson)).filter((l) => l.label !== lesson.label)
   for (let i = 0; i < 3; i++) {
     const options = shuffle([lesson, ...shuffle(others).slice(0, 2)])
     steps.push({
@@ -91,18 +139,65 @@ function letterSteps(group: LetterGroup, lesson: LetterLesson): Step[] {
       render: (next) => <PickLetter target={lesson} options={options} color={color} intro={i === 0} onDone={next} />,
     })
   }
+  const words = shuffle(pictured(lessonWords(lesson)))
+  return steps.concat(wordSteps(color, words, { builds: 2, matches: 2, picks: 2 }))
+}
 
-  const words = shuffle(blendableWords(lesson))
-  if (words.length) {
-    const card = words.slice(0, 3)
-    steps.push({ key: 'blending', render: (next) => <BlendingCard words={card} color={color} onDone={() => next()} /> })
-    words.slice(0, 2).forEach((w, i) =>
+/** Two letters that each keep their sound: the step up to four-letter words. */
+function patternSteps(group: Group, lesson: LessonData): Step[] {
+  const color = group.color
+  const words = shuffle(pictured(lessonWords(lesson)))
+  return [
+    { key: 'intro', render: (next) => <BlendIntro lesson={lesson} color={color} onDone={() => next()} /> } as Step,
+  ].concat(wordSteps(color, words, { builds: 3, matches: 2, picks: 2 }))
+}
+
+/** Words that are learned by sight, then used in sentences. */
+function trickySteps(group: Group, lesson: LessonData): Step[] {
+  const color = group.color
+  const words = (lesson.words ?? []).map((t) => wordByText(t)).filter((w): w is Word => Boolean(w))
+  const steps: Step[] = words.map((w, i) => ({
+    key: `tricky-${w.text}`,
+    render: (next) => <TrickyWord word={w} color={color} intro={i === 0} onDone={() => next()} />,
+  }))
+  const seen = trickyList.map((t) => wordByText(t)!).filter(Boolean)
+  shuffle(words)
+    .slice(0, 4)
+    .forEach((w, i) => {
+      const options = shuffle([w, ...shuffle(seen.filter((x) => x.text !== w.text)).slice(0, 2)])
       steps.push({
-        key: `match-${w.text}`,
-        render: (next) => <MatchPicture color={color} word={w} familyWords={words} intro={i === 0} onDone={next} />,
+        key: `pick-${w.text}`,
+        render: (next) => <PickWord target={w} options={options} color={color} intro={i === 0} onDone={next} />,
+      })
+    })
+  shuffle(lesson.sentences ?? [])
+    .slice(0, 3)
+    .forEach((s, i) =>
+      steps.push({ key: `build-${s.text}`, render: (next) => <SentenceBuild sentence={s} color={color} intro={i === 0} onDone={next} /> }),
+    )
+  return steps
+}
+
+/** Words strung together: read a sentence, match it to its picture, build it in order. */
+function sentenceSteps(group: Group, lesson: LessonData): Step[] {
+  const color = group.color
+  const chosen = shuffle(lesson.sentences ?? []).slice(0, 4)
+  const steps: Step[] = chosen.map((s, i) => ({
+    key: `read-${s.text}`,
+    render: (next) => <SentenceRead sentence={s} color={color} intro={i === 0} onDone={() => next()} />,
+  }))
+  chosen
+    .filter((s) => s.pics.length)
+    .slice(0, 3)
+    .forEach((s, i) =>
+      steps.push({
+        key: `pick-${s.text}`,
+        render: (next) => <SentencePick sentence={s} others={allSentences} color={color} intro={i === 0} onDone={next} />,
       }),
     )
-  }
+  chosen.forEach((s, i) =>
+    steps.push({ key: `build-${s.text}`, render: (next) => <SentenceBuild sentence={s} color={color} intro={i === 0} onDone={next} /> }),
+  )
   return steps
 }
 
@@ -116,20 +211,38 @@ function swapSteps(): Step[] {
   })
 }
 
-/** Eight random rounds of one practice game, drawn from every word the child can sound out. */
+/** Eight random rounds of one practice game. */
 function gameSteps(id: string): Step[] {
   if (id === 'game-letters') {
-    return shuffle(letterLessons)
+    return shuffle(soundLessons)
       .slice(0, 8)
       .map((target, i) => {
-        const options = shuffle([target, ...shuffle(letterLessons.filter((l) => l !== target)).slice(0, 2)])
+        const options = shuffle([target, ...shuffle(soundLessons.filter((l) => l.label !== target.label)).slice(0, 2)])
         return {
           key: `letter-${target.id}`,
           render: (next) => <PickLetter target={target} options={options} color="#f2a900" intro={i === 0} onDone={next} />,
         }
       })
   }
-  return shuffle(letterWords.filter((w) => familyOfWord(w.text)))
+  if (id === 'game-sentence') {
+    return shuffle(allSentences)
+      .slice(0, 6)
+      .map((s, i) => ({
+        key: `sentence-${s.text}`,
+        render: (next) => <SentenceBuild sentence={s} color="#2fb7a3" intro={i === 0} onDone={next} />,
+      }))
+  }
+  if (id === 'game-tiles' || id === 'game-pickword') {
+    const pool = shuffle(allWords.filter((w) => hasPicture(w) && w.text.length >= 3)).slice(0, 8)
+    return pool.map((w, i): Step => {
+      if (id === 'game-tiles')
+        return { key: `tiles-${w.text}`, render: (next) => <BuildTiles word={w} color="#e0638a" intro={i === 0} onDone={next} /> }
+      const options = wordOptions(w, [])
+      return { key: `pick-${w.text}`, render: (next) => <PickWord target={w} options={options} color="#7a6ff0" intro={i === 0} onDone={next} /> }
+    })
+  }
+  // The three-letter games use words that belong to a vowel family.
+  return shuffle(allWords.filter((w) => hasPicture(w) && familyOfWord(w.text)))
     .slice(0, 8)
     .map((w, i): Step => {
       const { unit, family } = familyOfWord(w.text)!
@@ -151,44 +264,50 @@ function gameSteps(id: string): Step[] {
     })
 }
 
-/** The order children move through the lessons: every letter, then every word family, then the swap game. */
-export const lessonOrder = [
-  ...letterLessons.map((l) => l.id),
-  ...units.flatMap((u) => u.families.map((f) => familyId(u.vowel, f.rime))),
-  SWAP_LESSON,
-]
+export const lessonOrder = pathway
 
-export const isLessonId = (id: string) =>
-  id === SWAP_LESSON || isGameId(id) || Boolean(findFamily(id) || findLetterLesson(id))
+export const isLessonId = (id: string) => id === SWAP || isGameId(id) || Boolean(findFamily(id) || findLesson(id))
 
 const starsFor = (mistakes: number) => (mistakes <= 1 ? 3 : mistakes <= 4 ? 2 : 1)
 
+const backTo = (kind?: LessonData['kind']) =>
+  kind === 'sound' ? '/' : kind === 'pattern' ? '/words' : kind === 'tricky' || kind === 'sentences' ? '/sentences' : '/games'
+
 export function Lesson({ id }: { id: string }) {
-  const family = id === SWAP_LESSON ? undefined : findFamily(id)
-  const letter = findLetterLesson(id)
+  const family = id === SWAP ? undefined : findFamily(id)
+  const course = findLesson(id)
   const [attempt, setAttempt] = useState(0)
-  const steps = useMemo(
-    () =>
-      family
-        ? familySteps(family.unit, family.family)
-        : letter
-          ? letterSteps(letter.group, letter.lesson)
-          : id === SWAP_LESSON
-            ? swapSteps()
-            : gameSteps(id),
-    [id, attempt],
-  )
+  const steps = useMemo(() => {
+    if (family) return familySteps(family.unit, family.family)
+    if (course) {
+      const { group, lesson } = course
+      return lesson.kind === 'sound'
+        ? soundSteps(group, lesson)
+        : lesson.kind === 'pattern'
+          ? patternSteps(group, lesson)
+          : lesson.kind === 'tricky'
+            ? trickySteps(group, lesson)
+            : sentenceSteps(group, lesson)
+    }
+    return id === SWAP ? swapSteps() : gameSteps(id)
+  }, [id, attempt])
   const [index, setIndex] = useState(0)
   const [mistakes, setMistakes] = useState(0)
   const [noteOpen, setNoteOpen] = useState(false)
 
-  const color = family
-    ? vowelColor[family.unit.vowel]
-    : letter
-      ? letter.group.color
-      : (games.find((g) => g.id === id)?.color ?? '#ff6b9a')
+  const color = family ? vowelColor[family.unit.vowel] : course ? course.group.color : (games.find((g) => g.id === id)?.color ?? '#ff6b9a')
   const finished = index >= steps.length
-  const back = () => go(family ? `/vowel/${family.unit.vowel}` : letter ? '/' : '/games')
+  const back = () => go(family ? `/vowel/${family.unit.vowel}` : backTo(course?.lesson.kind))
+  const isSound = course?.lesson.kind === 'sound'
+  const title = isSound
+    ? `Lesson /${course!.lesson.label}/`
+    : course?.lesson.kind === 'pattern'
+      ? course.lesson.label
+      : course?.lesson.kind === 'tricky'
+        ? 'Tricky words'
+        : course?.lesson.kind === 'sentences'
+          ? 'Sentences'
+          : ''
 
   const next = (m = 0) => {
     setMistakes((total) => total + m)
@@ -205,7 +324,7 @@ export function Lesson({ id }: { id: string }) {
         <RoundButton label="Back" onClick={back}>
           <span style={{ color }}>{Icon.back}</span>
         </RoundButton>
-        {letter && <h1 className="lesson-title">Lesson /{letter.lesson.label}/</h1>}
+        {title && <h1 className="lesson-title">{title}</h1>}
         <div className="progress" aria-label={`step ${Math.min(index + 1, steps.length)} of ${steps.length}`}>
           <motion.div
             className="progress-fill"
@@ -214,7 +333,7 @@ export function Lesson({ id }: { id: string }) {
             transition={{ type: 'spring', stiffness: 120, damping: 20 }}
           />
         </div>
-        {letter && (
+        {isSound && (
           <RoundButton label="How to say this sound" onClick={() => setNoteOpen(true)}>
             <span style={{ color }}>{Icon.book}</span>
           </RoundButton>
@@ -248,21 +367,21 @@ export function Lesson({ id }: { id: string }) {
         </motion.main>
       </AnimatePresence>
 
-      {noteOpen && letter && <LessonNote lesson={letter.lesson} color={color} onClose={() => setNoteOpen(false)} />}
+      {noteOpen && isSound && <LessonNote lesson={course!.lesson} color={color} onClose={() => setNoteOpen(false)} />}
     </div>
   )
 }
 
 /** For the grown-up helping: how to make this sound, and a button to hear it. */
-function LessonNote({ lesson, color, onClose }: { lesson: LetterLesson; color: string; onClose: () => void }) {
+function LessonNote({ lesson, color, onClose }: { lesson: LessonData; color: string; onClose: () => void }) {
   const { say } = useVoice()
   return (
     <div className="gate-backdrop" role="dialog" aria-label="How to say this sound" onClick={onClose}>
       <div className="gate" onClick={(e) => e.stopPropagation()}>
         <h2 style={{ color }}>Lesson /{lesson.label}/</h2>
-        <Picture word={lesson.keyword} size={fit(110, 0.16)} caption />
-        <p className="note-sound">{letterHint(lesson.soundOf)}</p>
-        <button type="button" className="text-btn big" onClick={() => say(sound(lesson.soundOf))}>
+        <Picture word={lesson.keyword!} size={fit(110, 0.16)} caption />
+        <p className="note-sound">{letterHint(lesson.soundOf!)}</p>
+        <button type="button" className="text-btn big" onClick={() => say(sound(lesson.soundOf!))}>
           ▶ Hear the sound
         </button>
         <button type="button" className="text-btn" onClick={onClose}>
@@ -274,8 +393,8 @@ function LessonNote({ lesson, color, onClose }: { lesson: LetterLesson; color: s
 }
 
 function nextLessonId(id: string): string | undefined {
-  const i = lessonOrder.indexOf(id)
-  return i >= 0 ? lessonOrder[i + 1] : undefined
+  const i = pathway.indexOf(id)
+  return i >= 0 ? pathway[i + 1] : undefined
 }
 
 function LessonDone({
@@ -303,12 +422,7 @@ function LessonDone({
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 10 }}>
         <Pip mood="cheer" size={fit(200, 0.28)} />
       </motion.div>
-      <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="done-stars"
-      >
+      <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="done-stars">
         <Stars count={stars} size={64} />
       </motion.div>
       <div className="done-actions">

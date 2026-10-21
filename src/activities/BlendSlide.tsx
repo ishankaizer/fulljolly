@@ -1,3 +1,4 @@
+import { partsOf } from '../data/graphemes'
 import { animate, motion, useMotionValue } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import type { VowelUnit, Word } from '../data/curriculum'
@@ -20,7 +21,7 @@ export function BlendSlide({
   intro: boolean
   onDone: () => void
 }) {
-  const letters = word.text.split('')
+  const letters = partsOf(word)
   const color = vowelColor[unit.vowel]
   const { talking, say } = useVoice()
   const [lit, setLit] = useState(-1)

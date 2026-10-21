@@ -1,18 +1,17 @@
 import { motion } from 'framer-motion'
 import { go } from '../lib/router'
-import { letterGroups } from '../data/letters'
 import { prompt } from '../lib/audio'
 import { loadProgress } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
 import { Pip } from '../components/Pip'
-import { Stars } from '../components/ui'
+import { GroupGrid } from '../components/GroupGrid'
 import { TabShell } from '../components/TabShell'
 import { lessonOrder } from './Lesson'
 
 /** Letters tab: lessons in colour-coded groups, and one big Play button that carries on where the child left off. */
 export function Home() {
   return (
-    <TabShell tab="letters" title="Word Nest">
+    <TabShell tab="sounds" title="Word Nest">
       <Letters />
     </TabShell>
   )
@@ -50,43 +49,7 @@ function Letters() {
         </motion.button>
       </section>
 
-      <main className="groups">
-        {letterGroups.map((group, gi) => (
-          <motion.section
-            key={group.n}
-            className="group"
-            style={{ ['--accent' as string]: group.color }}
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.1 + gi * 0.1, type: 'spring', stiffness: 220, damping: 18 }}
-          >
-            <div className="group-head">
-              <span className="group-animal" aria-hidden>
-                {group.animals[0]}
-              </span>
-              <h2>Group {group.n}</h2>
-              <span className="group-animal" aria-hidden>
-                {group.animals[1]}
-              </span>
-            </div>
-            <div className="group-tiles">
-              {group.lessons.map((l) => (
-                <motion.button
-                  key={l.id}
-                  type="button"
-                  className="letter-card"
-                  whileTap={{ scale: 0.93, y: 3 }}
-                  onClick={() => go(`/lesson/${l.id}`)}
-                  aria-label={`Letter ${l.label}`}
-                >
-                  <span className="letter-card-letter">{l.label}</span>
-                  <Stars count={progress[l.id] ?? 0} size={16} />
-                </motion.button>
-              ))}
-            </div>
-          </motion.section>
-        ))}
-      </main>
+      <GroupGrid tab="sounds" />
     </>
   )
 }

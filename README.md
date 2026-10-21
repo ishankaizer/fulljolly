@@ -4,14 +4,24 @@ Phonics games that teach young children to read three-letter words (cat, cot, cu
 how Mama teaches: one vowel at a time, one word family at a time (‑at: bat, cat, hat… ‑am: ham, jam, ram…).
 Pip the bird guides every lesson.
 
-## The four tabs
+## The course
 
-- **Letters:** 18 letter lessons in three groups (s a t i p n / ck e h r m d / g o u l f b). Each one: hear the sound,
-  finger-trace the letter, pick the letter that makes a sound, then a Blending card (touch the dot under each letter
-  to hear its sound, and the word blends and its picture appears). Words only use letters already taught.
-- **Words:** the vowel word families (-at, -am, ...) described below.
-- **Games:** swap the middle sound, match the picture, build the word, slide and blend, which letter.
-- **Books:** short picture readers made only of words the child can sound out, plus a few tricky words.
+The whole course is data (`src/data/course.ts`) in eight stages, from letter sounds to sentences. The written plan is in
+[`docs/LESSON_PLAN.md`](docs/LESSON_PLAN.md) and is also shown inside the app (grown-ups page, then "Open the lesson plan").
+
+1. **Letter sounds:** 24 lessons in four groups, covering all 26 letters.
+2. **Three-letter words:** the vowel word families (-at, -am, ...).
+3. **First sentences:** tricky words (I, the, a, is, to, has) and "The cat sat on a mat."
+4. **Two letters, one sound:** sh, ch, th, ng, qu.
+5. **Four-letter words:** two consonants side by side (clap, frog, hand, lamp).
+6. **Two vowels back to back:** ai, ee, oa, oo, ar, or, er, ow, oi, ou, ay, ea, igh.
+7. **Longer sentences:** "He is a boy." and "I like to play in the rain."
+8. **Practice:** swap the middle sound (cat, cot, cut).
+
+Five tabs: **Sounds**, **Words**, **Sentences**, **Games** (eight practice games) and **Books** (picture readers).
+
+`npm run check:course` proves every word only uses sounds taught before it, every sentence only uses words the child
+has met, and no two words share a picture. Run it after changing the course. `npm run plan` rewrites the written plan.
 
 ## How a word-family lesson works
 

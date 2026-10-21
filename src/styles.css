@@ -1366,6 +1366,24 @@ h2 {
   font-weight: 700;
   line-height: 1.05;
   color: var(--accent);
+  text-align: center;
+}
+.letter-card-mid {
+  font-size: clamp(34px, 7vw, 54px);
+}
+.letter-card-small {
+  font-size: clamp(18px, 3.8vw, 28px);
+  line-height: 1.4;
+  padding: 10px 0;
+}
+.letter-card-icon {
+  font-size: clamp(44px, 9vw, 64px);
+}
+.letter-card-caption {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-top: -4px;
 }
 .banner-label {
   flex: 1;
@@ -1434,4 +1452,195 @@ h2 {
   font-weight: 700;
   color: var(--accent);
   margin: 0;
+}
+
+/* ---------- tiles that hold more than one letter (sh, ai, igh) ---------- */
+
+.tile-wide {
+  width: auto !important;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  letter-spacing: -0.02em;
+}
+.tile-wide.tile-lg {
+  min-width: clamp(60px, min(19vw, 14vh), 118px);
+}
+.tile-wide.tile-md {
+  min-width: 44px;
+}
+
+/* ---------- build from tiles, pick the word ---------- */
+
+.build-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3vw, 28px);
+}
+.tiles-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 3.4vh, 30px);
+  --h: clamp(48px, 9.6vh, 92px);
+}
+.tiles-board .tile-md {
+  height: var(--h);
+  min-width: calc(var(--h) * 0.82);
+  width: calc(var(--h) * 0.82);
+  font-size: calc(var(--h) * 0.7);
+}
+.tiles-board .tile-wide {
+  width: auto;
+}
+.build-slot {
+  display: inline-block;
+  height: var(--h);
+  width: calc(var(--h) * 0.82);
+  border-radius: 14px;
+  border: 4px dashed;
+  background: rgba(255, 255, 255, 0.5);
+}
+.build-slot-wide {
+  width: calc(var(--h) * 1.25);
+}
+.tray {
+  flex-wrap: wrap;
+  max-width: 560px;
+}
+.word-choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(10px, 2.4vw, 20px);
+}
+.word-choice {
+  padding: clamp(10px, 2vh, 18px) clamp(18px, 4vw, 34px);
+  border-radius: 24px;
+  background: #fff;
+  border: 5px solid transparent;
+  font-size: clamp(34px, min(8vw, 8vh), 62px);
+  font-weight: 700;
+  color: var(--consonant);
+  box-shadow: 0 6px 0 #d5e2f0, 0 12px 20px var(--shadow);
+}
+.word-choice-right {
+  background: #f1fff7;
+}
+
+/* ---------- blends, tricky words, sentences ---------- */
+
+.blend-intro-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(10px, 2.6vw, 22px);
+}
+.tricky-card {
+  padding: clamp(18px, 4vh, 40px) clamp(30px, 8vw, 80px);
+  border-radius: 40px;
+  border: 8px solid;
+  background: #fff;
+  font-size: clamp(64px, min(17vw, 20vh), 150px);
+  font-weight: 700;
+  color: #8a5cd0;
+  line-height: 1.1;
+  box-shadow: 0 10px 0 #d5e2f0, 0 18px 30px var(--shadow);
+}
+.tricky-note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 20px;
+  font-weight: 700;
+}
+.sentence-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 12px;
+  max-width: 820px;
+}
+.sentence-slot {
+  min-width: clamp(40px, 9vw, 96px);
+  height: clamp(36px, 6.6vh, 66px);
+  padding: 0 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  border: 4px dashed;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: clamp(19px, min(4.6vw, 5vh), 42px);
+  font-weight: 700;
+  color: var(--consonant);
+}
+.sentence-slot-filled {
+  border-style: solid;
+  background: #fff;
+}
+.sentence-tray {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(8px, 1.6vw, 14px);
+  max-width: 820px;
+}
+.sentence-tray .word-choice {
+  font-size: clamp(19px, min(4.6vw, 5vh), 42px);
+  padding: clamp(5px, 1vh, 12px) clamp(10px, 2.2vw, 22px);
+  border-radius: 18px;
+}
+.sentence-tray .word-choice:disabled {
+  opacity: 0.25;
+}
+.sentence-pick .book-sentence {
+  font-size: clamp(24px, min(6vw, 6.4vh), 52px);
+}
+.sentence-pick .match-options {
+  flex-wrap: nowrap;
+  gap: clamp(6px, 2vw, 20px);
+}
+.match-card.scene {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+}
+
+.rec-keyword {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.rec-keyword .picture {
+  box-shadow: none;
+  background: #f3f9ff;
+  border-radius: 18px;
+}
+
+/* ---------- lesson plan ---------- */
+
+.plan-how {
+  font-size: 15px;
+}
+.plan-list {
+  margin: 0;
+  padding-left: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plan-item {
+  line-height: 1.45;
+}
+.plan-name {
+  font: inherit;
+  font-weight: 700;
+  color: #1a5f99;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-right: 8px;
+}
+.plan-detail {
+  color: var(--ink-soft);
 }

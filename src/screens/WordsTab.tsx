@@ -3,6 +3,7 @@ import { familyId, units } from '../data/curriculum'
 import { go } from '../lib/router'
 import { loadProgress } from '../lib/settings'
 import { Stars, vowelColor } from '../components/ui'
+import { GroupGrid } from '../components/GroupGrid'
 import { TabShell } from '../components/TabShell'
 
 /** Words tab: one banner per vowel, each leading to its word families (-at, -am, ...). */
@@ -10,6 +11,7 @@ export function WordsTab() {
   return (
     <TabShell tab="words" title="Words">
       <Banners />
+      <GroupGrid tab="words" />
     </TabShell>
   )
 }

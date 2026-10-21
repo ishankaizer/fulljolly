@@ -2,6 +2,7 @@ import { motion, type HTMLMotionProps } from 'framer-motion'
 import type { ReactNode } from 'react'
 import type { Vowel, Word } from '../data/curriculum'
 import { sfx } from '../lib/audio'
+import { shownPart } from '../data/graphemes'
 import { Art } from './art'
 import { Pip, type Mood } from './Pip'
 
@@ -13,7 +14,11 @@ export const vowelColor: Record<Vowel, string> = {
   u: '#f2a900',
 }
 
-export const isVowel = (letter: string) => 'aeiou'.includes(letter)
+/** Vowel letters are drawn red. A combination (ai, oo, ar) counts as a vowel sound; qu and y do not. */
+export const isVowel = (letter: string) => {
+  const t = shownPart(letter)
+  return t !== 'qu' && /[aeiou]/.test(t)
+}
 
 /** A chunky letter tile. Vowels are red, consonants navy, like a teacher's letter cards. */
 export function LetterTile({
@@ -33,7 +38,7 @@ export function LetterTile({
   return (
     <motion.button
       type="button"
-      className={`tile tile-${size} ${isVowel(letter) ? 'tile-vowel' : ''} ${lit ? 'tile-lit' : ''} ${dim ? 'tile-dim' : ''}`}
+      className={`tile tile-${size} ${isVowel(letter) ? 'tile-vowel' : ''} ${shownPart(letter).length > 1 ? 'tile-wide' : ''} ${lit ? 'tile-lit' : ''} ${dim ? 'tile-dim' : ''}`}
       whileTap={{ scale: 0.9, y: 4 }}
       animate={lit ? { scale: [1, 1.15, 1.06], y: -6 } : { scale: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 400, damping: 18 }}
@@ -41,17 +46,21 @@ export function LetterTile({
         sfx.tap()
         onTap?.()
       }}
-      aria-label={letter}
+      aria-label={shownPart(letter)}
       {...rest}
     >
-      {letter}
+      {shownPart(letter)}
     </motion.button>
   )
 }
 
 /** A letter tile that isn't a button, for use inside other buttons. */
 export function StaticTile({ letter, size = 'lg' }: { letter: string; size?: 'md' | 'lg' }) {
-  return <span className={`tile tile-${size} ${isVowel(letter) ? 'tile-vowel' : ''}`}>{letter}</span>
+  return (
+    <span className={`tile tile-${size} ${isVowel(letter) ? 'tile-vowel' : ''} ${shownPart(letter).length > 1 ? 'tile-wide' : ''}`}>
+      {shownPart(letter)}
+    </span>
+  )
 }
 
 /** The picture for a word: emoji, hand-drawn art, or (last resort) the word itself on a card. */

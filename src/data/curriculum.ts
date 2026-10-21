@@ -14,6 +14,8 @@ export interface Word {
   pic?: string
   /** Hand-drawn picture (see components/art.tsx) for words that have no good emoji. */
   art?: ArtId
+  /** The sounds to blend, when they are not simply one per letter, e.g. ['sh', 'i', 'p']. */
+  parts?: string[]
 }
 
 export interface Family {
@@ -70,7 +72,7 @@ export const units: VowelUnit[] = [
         rime: 'an',
         words: [
           { text: 'can', pic: '🥫' },
-          { text: 'fan', pic: '🪭' },
+          { text: 'fan', art: 'fan' },
           { text: 'man', pic: '🧔' },
           { text: 'pan', pic: '🍳' },
           { text: 'ran', pic: '🏃' },
@@ -185,7 +187,7 @@ export const units: VowelUnit[] = [
         words: [
           { text: 'pig', pic: '🐷' },
           { text: 'dig', pic: '⛏️' },
-          { text: 'fig', pic: '🫐' },
+          { text: 'fig', art: 'fig' },
           { text: 'big', pic: '🐘' },
         ],
       },
@@ -254,7 +256,7 @@ export const units: VowelUnit[] = [
         words: [
           { text: 'bug', pic: '🐛' },
           { text: 'hug', pic: '🤗' },
-          { text: 'jug', pic: '🫗' },
+          { text: 'jug', art: 'jug' },
           { text: 'mug', pic: '☕' },
         ],
       },

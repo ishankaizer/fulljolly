@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { books } from '../data/books'
-import { letterWords } from '../data/letters'
+import { allWords } from '../data/vocab'
 import { go } from '../lib/router'
 import { loadProgress } from '../lib/settings'
 import { Picture, Stars } from '../components/ui'
@@ -20,7 +20,7 @@ function Shelf() {
   return (
     <main className="banners">
       {books.map((book, i) => {
-        const cover = letterWords.find((w) => w.text === book.cover)
+        const cover = allWords.find((w) => w.text === book.cover)
         return (
           <motion.button
             key={book.id}

@@ -264,7 +264,17 @@ function Recorder({ item, onClose, onSaved }: { item: RecordItem; onClose: () =>
       <main className="panel-stack">
         <section className="panel rec-card">
           <div className="rec-subject">
-            {item.group === 'sounds' && <StaticTile letter={item.name} />}
+            {item.group === 'sounds' && (
+              <>
+                <StaticTile letter={item.tile ?? item.name} />
+                {item.keyword && (
+                  <span className="rec-keyword">
+                    <Picture word={item.keyword} size={64} />
+                    <span>as in “{item.keyword.text}”</span>
+                  </span>
+                )}
+              </>
+            )}
             {item.group === 'rimes' && (
               <span className="rec-tiles">
                 {item.name.split('').map((l, i) => (

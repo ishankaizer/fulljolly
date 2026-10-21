@@ -1,3 +1,4 @@
+import { partsOf } from '../data/graphemes'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import type { Word } from '../data/curriculum'
@@ -68,7 +69,7 @@ function BlendRow({
   done: boolean
   onComplete: () => void
 }) {
-  const letters = word.text.split('')
+  const letters = partsOf(word)
   const [lit, setLit] = useState(0)
   const [wobble, setWobble] = useState(-1)
 

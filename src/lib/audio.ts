@@ -1,5 +1,6 @@
 import { Howl } from 'howler'
 import { promptLines } from '../data/prompts'
+import { soundKeyOf } from '../data/graphemes'
 import { userClipUrl } from './recordings'
 import { loadSettings } from './settings'
 
@@ -27,6 +28,9 @@ const soundFallback: Record<string, string> = {
   a: 'a', b: 'buh', c: 'kuh', d: 'duh', e: 'eh', f: 'fff', g: 'guh', h: 'hhh', i: 'ih',
   j: 'juh', k: 'kuh', l: 'lll', m: 'mmm', n: 'nnn', o: 'o', p: 'puh', q: 'kwuh', r: 'rrr',
   s: 'sss', t: 'tuh', u: 'uh', v: 'vvv', w: 'wuh', x: 'ks', y: 'yuh', z: 'zzz',
+  // letter combinations
+  sh: 'shh', ch: 'ch', th: 'thh', ng: 'ng', qu: 'kw', ai: 'ay', ee: 'ee', oa: 'oh', oo: 'oo',
+  oo2: 'uh', ar: 'ar', or: 'or', er: 'er', ow: 'ow', oi: 'oy', ou: 'ow', ay: 'ay', ea: 'ee', igh: 'eye',
 }
 
 export type Clip =
@@ -38,9 +42,9 @@ export type Clip =
 
 function clipKey(clip: Clip): string | undefined {
   switch (clip.kind) {
-    case 'sound': return `sounds/${clip.letter}`
+    case 'sound': return `sounds/${soundKeyOf(clip.letter)}`
     case 'rime': return `rimes/${clip.rime}`
-    case 'word': return `words/${clip.text}`
+    case 'word': return `words/${clip.text.toLowerCase()}`
     case 'prompt': return `prompts/${clip.id}`
     default: return undefined
   }
@@ -54,7 +58,7 @@ function recordingFor(clip: Clip): string | undefined {
 
 function fallbackText(clip: Clip): string {
   switch (clip.kind) {
-    case 'sound': return soundFallback[clip.letter] ?? clip.letter
+    case 'sound': return soundFallback[soundKeyOf(clip.letter)] ?? clip.letter
     case 'rime': return clip.say ?? clip.rime
     case 'word': return clip.text
     case 'prompt': return clip.text
@@ -63,6 +67,9 @@ function fallbackText(clip: Clip): string {
 }
 
 export const hasRecording = (clip: Clip) => recordingFor(clip) !== undefined
+
+/** Whether a recording (made in the app or bundled) exists for a storage key like "sounds/sh". */
+export const hasRecordedKey = (key: string) => (userClipUrl(key) ?? recordings.get(key)) !== undefined
 
 // Only one thing talks at a time: starting a new clip cancels whatever was playing.
 let generation = 0

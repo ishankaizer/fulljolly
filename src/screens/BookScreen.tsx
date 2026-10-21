@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { findBook, isTricky, tokens } from '../data/books'
-import { letterWords } from '../data/letters'
+import { allWords } from '../data/vocab'
 import { pause, prompt, sfx, word } from '../lib/audio'
 import { go } from '../lib/router'
 import { saveStars } from '../lib/settings'
@@ -20,7 +20,7 @@ export function BookScreen({ id }: { id: string }) {
 
   const current = book.pages[page]
   const words = tokens(current.sentence)
-  const pics = current.pics.map((t) => letterWords.find((w) => w.text === t)).filter(Boolean)
+  const pics = current.pics.map((t) => allWords.find((w) => w.text === t)).filter(Boolean)
 
   const readAloud = async () => {
     for (let i = 0; i < words.length; i++) {

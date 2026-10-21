@@ -1,3 +1,4 @@
+import { partsOf } from '../data/graphemes'
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { units, type Word } from '../data/curriculum'
@@ -58,7 +59,7 @@ export function MatchPicture({
   return (
     <div className="activity match">
       <div className="tile-row">
-        {word.text.split('').map((l, i) => (
+        {partsOf(word).map((l, i) => (
           <LetterTile key={i} letter={l} lit={found} onTap={() => say(sound(l))} />
         ))}
       </div>

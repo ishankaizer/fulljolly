@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import { units, vowelSwaps } from '../data/curriculum'
-import { readerWords } from '../data/books'
-import { letterGroups } from '../data/letters'
-import { englishVoices, hasRecording, play, rime, sound, word } from '../lib/audio'
+import { groupTitles, recordItems, type ClipGroup } from '../data/recordingList'
+import { englishVoices, hasRecordedKey, play, sound, word } from '../lib/audio'
 import { go } from '../lib/router'
 import {
   addProfile,
@@ -20,16 +18,7 @@ import {
 } from '../lib/settings'
 import { Icon, RoundButton } from '../components/ui'
 
-const letters = [...new Set(units.flatMap((u) => u.families.flatMap((f) => f.words.flatMap((w) => w.text.split('')))))].sort()
-const allWords = [
-  ...new Set([
-    ...units.flatMap((u) => [u.keyword.text, ...u.families.flatMap((f) => f.words.map((w) => w.text))]),
-    ...vowelSwaps.flatMap((s) => s.words.map((w) => w.text)),
-    ...letterGroups.flatMap((g) => g.lessons.map((l) => l.keyword.text)),
-    ...readerWords,
-  ]),
-].sort()
-const allRimes = units.flatMap((u) => u.families)
+const groupsInOrder: ClipGroup[] = ['sounds', 'rimes', 'words', 'prompts']
 
 /** Settings for the teacher: voice, speed, sound effects, recordings checklist, progress reset. */
 export function GrownUps() {
@@ -53,9 +42,7 @@ export function GrownUps() {
     saveSettings(next)
   }
 
-  const missingSounds = letters.filter((l) => !hasRecording(sound(l)))
-  const missingRimes = allRimes.filter((f) => !hasRecording(rime(f.rime)))
-  const missingWords = allWords.filter((w) => !hasRecording(word(w)))
+  const missing = (g: ClipGroup) => recordItems.filter((i) => i.group === g && !hasRecordedKey(i.key))
 
   return (
     <div className="screen grown-ups">
@@ -67,6 +54,14 @@ export function GrownUps() {
       </header>
 
       <main className="panel-stack">
+        <section className="panel">
+          <h2>Lesson plan</h2>
+          <p>The whole course in order: every lesson, the words it uses, and what children do in each.</p>
+          <button type="button" className="text-btn big" onClick={() => go('/plan')}>
+            Open the lesson plan
+          </button>
+        </section>
+
         <section className="panel">
           <h2>Voice</h2>
           <p>
@@ -117,9 +112,11 @@ export function GrownUps() {
           <button type="button" className="text-btn big" onClick={() => go('/studio')}>
             Open the recording studio
           </button>
-          <Checklist title="Letter sounds" total={letters.length} missing={missingSounds} />
-          <Checklist title="Word endings" total={allRimes.length} missing={missingRimes.map((f) => `-${f.rime}`)} />
-          <Checklist title="Words" total={allWords.length} missing={missingWords} />
+          {groupsInOrder.map((g) => {
+            const total = recordItems.filter((i) => i.group === g).length
+            const left = missing(g)
+            return <Checklist key={g} title={groupTitles[g]} total={total} missing={left.map((i) => (g === 'rimes' ? `-${i.name}` : i.name))} />
+          })}
         </section>
 
         <section className="panel">
