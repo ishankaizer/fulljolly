@@ -1,17 +1,23 @@
 import { motion } from 'framer-motion'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { familyId, units } from '../data/curriculum'
 import { prompt } from '../lib/audio'
 import { go } from '../lib/router'
-import { loadProgress } from '../lib/settings'
+import { currentProfile, getProfiles, loadProgress, switchProfile } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
 import { Pip } from '../components/Pip'
+import { ParentGate } from '../components/ParentGate'
 import { Stars, StaticTile, vowelColor } from '../components/ui'
 import { SWAP_LESSON } from './Lesson'
 
 /** Home: one big Play button that carries on where the child left off, and a banner for each vowel. */
 export function Home() {
+  const [, refresh] = useState(0)
+  const [picking, setPicking] = useState(false)
+  const [gate, setGate] = useState(false)
   const progress = loadProgress()
+  const profiles = getProfiles()
+  const me = currentProfile()
   const { talking, say } = useVoice()
 
   const allIds = units.flatMap((u) => u.families.map((f) => familyId(u.vowel, f.rime)))
@@ -22,7 +28,17 @@ export function Home() {
     <div className="screen home">
       <header className="home-top">
         <h1 className="home-title">Word Nest</h1>
-        <GrownUpsDoor />
+        <div className="home-top-right">
+          <button
+            type="button"
+            className="avatar-btn"
+            onClick={() => profiles.length > 1 && setPicking(true)}
+            aria-label={`Playing as ${me.name}`}
+          >
+            {me.avatar}
+          </button>
+          <GrownUpsDoor onOpen={() => setGate(true)} />
+        </div>
       </header>
 
       <section className="home-hero">
@@ -103,16 +119,42 @@ export function Home() {
           </span>
         </motion.button>
       </main>
+
+      {picking && (
+        <div className="gate-backdrop" role="dialog" aria-label="Who is playing?" onClick={() => setPicking(false)}>
+          <div className="gate" onClick={(e) => e.stopPropagation()}>
+            <div className="picker">
+              {profiles.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  className={`picker-item ${p.id === me.id ? 'picker-current' : ''}`}
+                  onClick={() => {
+                    switchProfile(p.id)
+                    setPicking(false)
+                    refresh((n) => n + 1)
+                  }}
+                  aria-label={p.name}
+                >
+                  <span className="picker-avatar">{p.avatar}</span>
+                  <span className="picker-name">{p.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      {gate && <ParentGate onPass={() => go('/grown-ups')} onCancel={() => setGate(false)} />}
     </div>
   )
 }
 
 /** Press and hold for 2 seconds to open the grown-ups page, so little fingers don't wander in. */
-function GrownUpsDoor() {
+function GrownUpsDoor({ onOpen }: { onOpen: () => void }) {
   const timer = useRef<number>(undefined)
   useEffect(() => () => window.clearTimeout(timer.current), [])
   const start = () => {
-    timer.current = window.setTimeout(() => go('/grown-ups'), 2000)
+    timer.current = window.setTimeout(onOpen, 2000)
   }
   const cancel = () => window.clearTimeout(timer.current)
   return (

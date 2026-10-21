@@ -2,7 +2,20 @@ import { useEffect, useState } from 'react'
 import { units, vowelSwaps } from '../data/curriculum'
 import { englishVoices, hasRecording, play, rime, sound, word } from '../lib/audio'
 import { go } from '../lib/router'
-import { loadSettings, resetProgress, saveSettings, type Settings } from '../lib/settings'
+import {
+  addProfile,
+  avatars,
+  currentProfile,
+  getProfiles,
+  loadSettings,
+  progressFor,
+  removeProfile,
+  resetProgress,
+  saveSettings,
+  switchProfile,
+  updateProfile,
+  type Settings,
+} from '../lib/settings'
 import { Icon, RoundButton } from '../components/ui'
 
 const letters = [...new Set(units.flatMap((u) => u.families.flatMap((f) => f.words.flatMap((w) => w.text.split('')))))].sort()
@@ -18,7 +31,11 @@ const allRimes = units.flatMap((u) => u.families)
 export function GrownUps() {
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [voices, setVoices] = useState(englishVoices)
-  const [cleared, setCleared] = useState(false)
+  const [, refresh] = useState(0)
+  const rerender = () => refresh((n) => n + 1)
+  const profiles = getProfiles()
+  const [newAvatar, setNewAvatar] = useState(avatars[1])
+  const [newName, setNewName] = useState('')
 
   useEffect(() => {
     // Voices load late on some browsers.
@@ -99,20 +116,92 @@ export function GrownUps() {
         </section>
 
         <section className="panel">
-          <h2>Progress</h2>
-          <p>Stars are saved on this device only.</p>
-          <button
-            type="button"
-            className="text-btn danger"
-            onClick={() => {
-              if (window.confirm('Clear all stars on this device?')) {
-                resetProgress()
-                setCleared(true)
-              }
-            }}
-          >
-            {cleared ? 'Stars cleared' : 'Clear all stars'}
-          </button>
+          <h2>Children</h2>
+          <p>Each child has their own stars. The child playing can be changed from the avatar on the home screen.</p>
+          {profiles.map((p) => {
+            const stars = Object.values(progressFor(p.id)).reduce((a, b) => a + b, 0)
+            return (
+              <div key={p.id} className="profile-row">
+                <select
+                  className="profile-avatar"
+                  value={p.avatar}
+                  onChange={(e) => {
+                    updateProfile(p.id, { avatar: e.target.value })
+                    rerender()
+                  }}
+                  aria-label={`Picture for ${p.name}`}
+                >
+                  {avatars.map((a) => (
+                    <option key={a} value={a}>
+                      {a}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  className="profile-name"
+                  value={p.name}
+                  onChange={(e) => {
+                    updateProfile(p.id, { name: e.target.value })
+                    rerender()
+                  }}
+                  aria-label="Name"
+                />
+                <span className="profile-stars">⭐ {stars}</span>
+                {p.id !== currentProfile().id && (
+                  <button type="button" className="text-btn" onClick={() => { switchProfile(p.id); rerender() }}>
+                    Play as
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="text-btn danger"
+                  onClick={() => {
+                    if (window.confirm(`Clear all stars for ${p.name}?`)) {
+                      resetProgress(p.id)
+                      rerender()
+                    }
+                  }}
+                >
+                  Clear stars
+                </button>
+                {profiles.length > 1 && (
+                  <button
+                    type="button"
+                    className="text-btn danger"
+                    onClick={() => {
+                      if (window.confirm(`Remove ${p.name} and their stars?`)) {
+                        removeProfile(p.id)
+                        rerender()
+                      }
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            )
+          })}
+          <div className="profile-row">
+            <select className="profile-avatar" value={newAvatar} onChange={(e) => setNewAvatar(e.target.value)} aria-label="Picture">
+              {avatars.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+            <input className="profile-name" placeholder="New child's name" value={newName} onChange={(e) => setNewName(e.target.value)} />
+            <button
+              type="button"
+              className="text-btn"
+              onClick={() => {
+                addProfile(newName, newAvatar)
+                setNewName('')
+                rerender()
+              }}
+            >
+              Add child
+            </button>
+          </div>
         </section>
       </main>
     </div>
