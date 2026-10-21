@@ -6,7 +6,7 @@ import { go } from '../lib/router'
 import { loadProgress } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
 import { Pip } from '../components/Pip'
-import { Icon, RoundButton, Stars, StaticTile, vowelColor } from '../components/ui'
+import { Icon, Picture, RoundButton, Stars, StaticTile, hasPicture, vowelColor } from '../components/ui'
 
 /** One vowel: hear its sound with a keyword (a… apple), then pick a word family. */
 export function VowelScreen({ vowel }: { vowel: Vowel }) {
@@ -68,10 +68,10 @@ export function VowelScreen({ vowel }: { vowel: Vowel }) {
               </span>
               <span className="family-tile-pics">
                 {f.words
-                  .filter((w) => w.pic)
-                  .slice(0, 3)
+                  .filter(hasPicture)
+                  .slice(0, 4)
                   .map((w) => (
-                    <span key={w.text}>{w.pic}</span>
+                    <Picture key={w.text} word={w} size={46} />
                   ))}
               </span>
               <Stars count={progress[id] ?? 0} size={20} />

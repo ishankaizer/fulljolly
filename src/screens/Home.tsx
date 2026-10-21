@@ -9,60 +9,86 @@ import { Pip } from '../components/Pip'
 import { Stars, StaticTile, vowelColor } from '../components/ui'
 import { SWAP_LESSON } from './Lesson'
 
-/** The map: one island per vowel, then the "swap the middle sound" challenge. */
+/** Home: one big Play button that carries on where the child left off, and a banner for each vowel. */
 export function Home() {
   const progress = loadProgress()
   const { talking, say } = useVoice()
 
+  const allIds = units.flatMap((u) => u.families.map((f) => familyId(u.vowel, f.rime)))
+  const nextId = allIds.find((id) => !progress[id]) ?? SWAP_LESSON
+  const started = allIds.some((id) => progress[id])
+
   return (
     <div className="screen home">
       <header className="home-top">
-        <div className="brand" onClick={() => say(prompt('welcome', 'Hello! I am Pip. Pick a letter to play!'))}>
-          <Pip mood={talking ? 'talk' : 'idle'} size={92} />
-          <h1>Word Nest</h1>
-        </div>
+        <h1 className="home-title">Word Nest</h1>
         <GrownUpsDoor />
       </header>
 
-      <main className="map">
-        <svg className="map-path" viewBox="0 0 100 600" preserveAspectRatio="none" aria-hidden>
-          <path d="M50 40 C 90 110, 10 170, 50 240 S 90 370, 50 440 S 10 540, 50 590" />
-        </svg>
+      <section className="home-hero">
+        <button
+          type="button"
+          className="pip-button"
+          onClick={() => say(prompt('welcome', 'Hello! I am Pip. Press play to start!'))}
+          aria-label="Talk to Pip"
+        >
+          <Pip mood={talking ? 'talk' : 'idle'} size={150} />
+        </button>
+        <motion.button
+          type="button"
+          className="play-btn"
+          onClick={() => go(`/lesson/${nextId}`)}
+          animate={{ scale: [1, 1.07, 1] }}
+          transition={{ duration: 1.4, repeat: Infinity }}
+          whileTap={{ scale: 0.92, y: 5 }}
+          aria-label={started ? 'Keep playing' : 'Play'}
+        >
+          <svg viewBox="0 0 24 24" width="64" height="64" fill="#fff">
+            <path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z" />
+          </svg>
+        </motion.button>
+      </section>
+
+      <main className="banners">
         {units.map((unit, i) => {
           const ids = unit.families.map((f) => familyId(unit.vowel, f.rime))
-          const done = ids.filter((id) => progress[id]).length
           const stars = ids.reduce((sum, id) => sum + (progress[id] ?? 0), 0)
           return (
             <motion.button
               key={unit.vowel}
               type="button"
-              className={`island island-${i % 2 ? 'right' : 'left'}`}
+              className="banner"
               style={{ ['--accent' as string]: vowelColor[unit.vowel] }}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: i * 0.08, type: 'spring', stiffness: 200, damping: 14 }}
-              whileTap={{ scale: 0.93 }}
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 + i * 0.07, type: 'spring', stiffness: 220, damping: 18 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => go(`/vowel/${unit.vowel}`)}
               aria-label={`Letter ${unit.vowel}`}
             >
-              <span className="island-letter">{unit.vowel}</span>
-              <span className="island-pic">{unit.keyword.pic}</span>
-              <span className="island-meta">
-                <Stars count={Math.round(stars / ids.length)} size={18} />
-                <small>
-                  {done}/{ids.length}
-                </small>
+              <span className="banner-tile">{unit.vowel}</span>
+              <span className="banner-pic">{unit.keyword.pic}</span>
+              <span className="banner-info">
+                <span className="banner-chips">
+                  {unit.families.map((f, j) => (
+                    <i key={f.rime} className={progress[ids[j]] ? 'chip-done' : ''}>
+                      {f.rime}
+                    </i>
+                  ))}
+                </span>
+                <Stars count={Math.round(stars / ids.length)} size={20} />
               </span>
             </motion.button>
           )
         })}
+
         <motion.button
           type="button"
-          className="island island-swap"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.5, type: 'spring', stiffness: 200, damping: 14 }}
-          whileTap={{ scale: 0.93 }}
+          className="banner banner-swap"
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5, type: 'spring', stiffness: 220, damping: 18 }}
+          whileTap={{ scale: 0.96 }}
           onClick={() => go(`/lesson/${SWAP_LESSON}`)}
           aria-label="Swap the middle sound"
         >
@@ -71,7 +97,10 @@ export function Home() {
             <span className="swap-q">?</span>
             <StaticTile letter="t" size="md" />
           </span>
-          <Stars count={progress[SWAP_LESSON] ?? 0} size={18} />
+          <span className="banner-pic">🐱</span>
+          <span className="banner-info">
+            <Stars count={progress[SWAP_LESSON] ?? 0} size={20} />
+          </span>
         </motion.button>
       </main>
     </div>

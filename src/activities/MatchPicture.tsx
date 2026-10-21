@@ -3,10 +3,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { units, type VowelUnit, type Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Pip } from '../components/Pip'
-import { Confetti, Icon, LetterTile, Picture, RoundButton, shuffle, vowelColor } from '../components/ui'
+import { Footer, Confetti, Icon, LetterTile, Picture, RoundButton, hasPicture, pictureKey, shuffle, vowelColor } from '../components/ui'
 
-const everyPictured = units.flatMap((u) => u.families.flatMap((f) => f.words)).filter((w) => w.pic)
+const everyPictured = units.flatMap((u) => u.families.flatMap((f) => f.words)).filter(hasPicture)
 
 /** Read the word (tap letters for help), then tap the picture that matches. */
 export function MatchPicture({
@@ -29,13 +28,13 @@ export function MatchPicture({
 
   const options = useMemo(() => {
     // Rhyming pictures first (cat vs hat): reading the first letter is what counts.
-    const differentPic = (w: Word) => w.text !== word.text && w.pic !== word.pic
-    const near = shuffle(familyWords.filter((w) => w.pic && differentPic(w)))
+    const differentPic = (w: Word) => w.text !== word.text && pictureKey(w) !== pictureKey(word)
+    const near = shuffle(familyWords.filter((w) => hasPicture(w) && differentPic(w)))
     const far = shuffle(everyPictured.filter((w) => differentPic(w) && !near.includes(w)))
     const picked: Word[] = []
     for (const w of [...near, ...far]) {
       if (picked.length === 2) break
-      if (!picked.some((p) => p.pic === w.pic)) picked.push(w)
+      if (!picked.some((p) => pictureKey(p) === pictureKey(w))) picked.push(w)
     }
     return shuffle([word, ...picked])
   }, [word.text])
@@ -96,14 +95,18 @@ export function MatchPicture({
         })}
       </div>
 
-      <div className="activity-footer">
-        <Pip mood={found ? 'cheer' : wrong.length ? 'think' : talking ? 'talk' : 'idle'} size={120} />
+      <Footer mood={found ? 'cheer' : wrong.length ? 'think' : talking ? 'talk' : 'idle'}>
+        {!found && (
+          <RoundButton label="Hear the instruction" onClick={() => say(prompt('match-intro', 'Read the word. Then tap its picture!'))}>
+            <span style={{ color }}>{Icon.speaker}</span>
+          </RoundButton>
+        )}
         {found && (
           <RoundButton label="Next" color={color} onClick={() => onDone(wrong.length)} pulse={!talking}>
             <span style={{ color: '#fff' }}>{Icon.next}</span>
           </RoundButton>
         )}
-      </div>
+      </Footer>
     </div>
   )
 }

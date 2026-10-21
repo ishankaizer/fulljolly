@@ -4,12 +4,16 @@
 // Each word family is a group of words that share an ending ("rime"), e.g. -at: bat, cat, hat.
 // Families marked `fromMama: true` are exactly as Mama listed them; the rest are drafts for her to review.
 
+import type { ArtId } from '../components/art'
+
 export type Vowel = 'a' | 'e' | 'i' | 'o' | 'u'
 
 export interface Word {
   text: string
-  /** Picture shown with the word. Emoji for now; can later point at an illustration. */
+  /** Emoji picture shown with the word. */
   pic?: string
+  /** Hand-drawn picture (see components/art.tsx) for words that have no good emoji. */
+  art?: ArtId
 }
 
 export interface Family {
@@ -42,10 +46,10 @@ export const units: VowelUnit[] = [
         words: [
           { text: 'bat', pic: '🦇' },
           { text: 'cat', pic: '🐱' },
-          { text: 'fat' },
+          { text: 'fat', art: 'fat' },
           { text: 'hat', pic: '🎩' },
-          { text: 'mat' },
-          { text: 'pat' },
+          { text: 'mat', art: 'mat' },
+          { text: 'pat', art: 'pat' },
           { text: 'rat', pic: '🐀' },
           { text: 'sat', pic: '🪑' },
           { text: 'vat', pic: '🛢️' },
@@ -67,7 +71,7 @@ export const units: VowelUnit[] = [
         words: [
           { text: 'can', pic: '🥫' },
           { text: 'fan', pic: '🪭' },
-          { text: 'man', pic: '👨' },
+          { text: 'man', pic: '🧔' },
           { text: 'pan', pic: '🍳' },
           { text: 'ran', pic: '🏃' },
           { text: 'van', pic: '🚐' },
@@ -80,17 +84,15 @@ export const units: VowelUnit[] = [
           { text: 'map', pic: '🗺️' },
           { text: 'nap', pic: '😴' },
           { text: 'tap', pic: '🚰' },
-          { text: 'lap' },
         ],
       },
       {
         rime: 'ad',
         words: [
-          { text: 'dad', pic: '👨' },
+          { text: 'dad', pic: '👨‍👧' },
           { text: 'sad', pic: '😢' },
           { text: 'mad', pic: '😠' },
           { text: 'pad', pic: '📝' },
-          { text: 'had' },
         ],
       },
       {
@@ -100,7 +102,6 @@ export const units: VowelUnit[] = [
           { text: 'bag', pic: '👜' },
           { text: 'tag', pic: '🏷️' },
           { text: 'wag', pic: '🐕' },
-          { text: 'rag' },
         ],
       },
     ],
@@ -115,10 +116,9 @@ export const units: VowelUnit[] = [
         words: [
           { text: 'jet', pic: '✈️' },
           { text: 'net', pic: '🥅' },
-          { text: 'pet', pic: '🐶' },
+          { text: 'pet', pic: '🐹' },
           { text: 'vet', pic: '🩺' },
           { text: 'wet', pic: '💧' },
-          { text: 'get' },
         ],
       },
       {
@@ -128,7 +128,6 @@ export const units: VowelUnit[] = [
           { text: 'pen', pic: '🖊️' },
           { text: 'ten', pic: '🔟' },
           { text: 'men', pic: '👬' },
-          { text: 'den' },
         ],
       },
       {
@@ -137,7 +136,6 @@ export const units: VowelUnit[] = [
           { text: 'bed', pic: '🛏️' },
           { text: 'red', pic: '🔴' },
           { text: 'fed', pic: '🍼' },
-          { text: 'led' },
         ],
       },
       {
@@ -158,12 +156,9 @@ export const units: VowelUnit[] = [
       {
         rime: 'it',
         words: [
-          { text: 'sit', pic: '🪑' },
           { text: 'kit', pic: '🧰' },
           { text: 'hit', pic: '🏏' },
           { text: 'fit', pic: '💪' },
-          { text: 'bit' },
-          { text: 'pit' },
         ],
       },
       {
@@ -171,7 +166,6 @@ export const units: VowelUnit[] = [
         words: [
           { text: 'bin', pic: '🗑️' },
           { text: 'pin', pic: '📌' },
-          { text: 'tin', pic: '🥫' },
           { text: 'win', pic: '🏆' },
           { text: 'fin', pic: '🦈' },
         ],
@@ -183,8 +177,6 @@ export const units: VowelUnit[] = [
           { text: 'lip', pic: '👄' },
           { text: 'zip', pic: '🤐' },
           { text: 'sip', pic: '🥤' },
-          { text: 'dip' },
-          { text: 'tip' },
         ],
       },
       {
@@ -195,7 +187,6 @@ export const units: VowelUnit[] = [
           { text: 'dig', pic: '⛏️' },
           { text: 'fig', pic: '🫐' },
           { text: 'big', pic: '🐘' },
-          { text: 'wig' },
         ],
       },
     ],
@@ -208,11 +199,10 @@ export const units: VowelUnit[] = [
         rime: 'ot',
         say: 'ott',
         words: [
-          { text: 'cot', pic: '🛏️' },
+          { text: 'cot', art: 'cot' },
           { text: 'dot', pic: '⚫' },
           { text: 'hot', pic: '🔥' },
           { text: 'pot', pic: '🍲' },
-          { text: 'not' },
         ],
       },
       {
@@ -233,7 +223,6 @@ export const units: VowelUnit[] = [
           { text: 'fog', pic: '🌫️' },
           { text: 'log', pic: '🪵' },
           { text: 'hog', pic: '🐗' },
-          { text: 'jog', pic: '🏃' },
         ],
       },
     ],
@@ -249,7 +238,6 @@ export const units: VowelUnit[] = [
           { text: 'cut', pic: '✂️' },
           { text: 'hut', pic: '🛖' },
           { text: 'nut', pic: '🥜' },
-          { text: 'but' },
         ],
       },
       {
@@ -257,7 +245,6 @@ export const units: VowelUnit[] = [
         words: [
           { text: 'bun', pic: '🍞' },
           { text: 'sun', pic: '☀️' },
-          { text: 'run', pic: '🏃' },
           { text: 'fun', pic: '🎉' },
         ],
       },
@@ -269,13 +256,11 @@ export const units: VowelUnit[] = [
           { text: 'hug', pic: '🤗' },
           { text: 'jug', pic: '🫗' },
           { text: 'mug', pic: '☕' },
-          { text: 'rug' },
         ],
       },
       {
         rime: 'um',
         words: [
-          { text: 'mum', pic: '👩' },
           { text: 'gum', pic: '🍬' },
           { text: 'hum', pic: '🎶' },
           { text: 'sum', pic: '➕' },
@@ -296,12 +281,12 @@ export interface SwapFrame {
 }
 
 export const vowelSwaps: SwapFrame[] = [
-  { first: 'c', last: 't', words: [{ text: 'cat', pic: '🐱' }, { text: 'cot', pic: '🛏️' }, { text: 'cut', pic: '✂️' }] },
+  { first: 'c', last: 't', words: [{ text: 'cat', pic: '🐱' }, { text: 'cot', art: 'cot' }, { text: 'cut', pic: '✂️' }] },
   { first: 'h', last: 't', words: [{ text: 'hat', pic: '🎩' }, { text: 'hit', pic: '🏏' }, { text: 'hot', pic: '🔥' }, { text: 'hut', pic: '🛖' }] },
   { first: 'p', last: 'n', words: [{ text: 'pan', pic: '🍳' }, { text: 'pen', pic: '🖊️' }, { text: 'pin', pic: '📌' }] },
   { first: 'b', last: 'g', words: [{ text: 'bag', pic: '👜' }, { text: 'big', pic: '🐘' }, { text: 'bug', pic: '🐛' }] },
-  { first: 'p', last: 't', words: [{ text: 'pet', pic: '🐶' }, { text: 'pit' }, { text: 'pot', pic: '🍲' }] },
-  { first: 'b', last: 'd', words: [{ text: 'bad' }, { text: 'bed', pic: '🛏️' }, { text: 'bud', pic: '🌱' }] },
+  { first: 'p', last: 't', words: [{ text: 'pat', art: 'pat' }, { text: 'pet', pic: '🐹' }, { text: 'pot', pic: '🍲' }] },
+  { first: 'b', last: 'd', words: [{ text: 'bed', pic: '🛏️' }, { text: 'bud', pic: '🌱' }] },
 ]
 
 export const familyId = (vowel: Vowel, rime: string) => `${vowel}-${rime}`

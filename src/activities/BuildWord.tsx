@@ -3,8 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Family, VowelUnit, Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Pip } from '../components/Pip'
-import { Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, shuffle, vowelColor } from '../components/ui'
+import { Footer, Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, shuffle, vowelColor } from '../components/ui'
 
 const spareConsonants = 'bcdfghjklmnprstvwz'.split('')
 
@@ -113,14 +112,13 @@ export function BuildWord({
         )}
       </div>
 
-      <div className="activity-footer">
-        <Pip mood={placed ? 'cheer' : wrong ? 'think' : talking ? 'talk' : 'idle'} size={120} />
+      <Footer mood={placed ? 'cheer' : wrong ? 'think' : talking ? 'talk' : 'idle'}>
         {placed && (
           <RoundButton label="Next" color={color} onClick={() => onDone(mistakes)} pulse={!talking}>
             <span style={{ color: '#fff' }}>{Icon.next}</span>
           </RoundButton>
         )}
-      </div>
+      </Footer>
     </div>
   )
 }

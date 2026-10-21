@@ -2,6 +2,8 @@ import { motion, type HTMLMotionProps } from 'framer-motion'
 import type { ReactNode } from 'react'
 import type { Vowel, Word } from '../data/curriculum'
 import { sfx } from '../lib/audio'
+import { Art } from './art'
+import { Pip, type Mood } from './Pip'
 
 export const vowelColor: Record<Vowel, string> = {
   a: '#ff7a45',
@@ -52,11 +54,13 @@ export function StaticTile({ letter, size = 'lg' }: { letter: string; size?: 'md
   return <span className={`tile tile-${size} ${isVowel(letter) ? 'tile-vowel' : ''}`}>{letter}</span>
 }
 
-/** The picture for a word, or the word itself on a card while it has no picture yet. */
-export function Picture({ word, size = 160 }: { word: Word; size?: number }) {
+/** The picture for a word: emoji, hand-drawn art, or (last resort) the word itself on a card. */
+export function Picture({ word, size = 160, caption = false }: { word: Word; size?: number; caption?: boolean }) {
   return (
-    <div className="picture" style={{ width: size, height: size }}>
-      {word.pic ? (
+    <div className="picture" style={{ width: size, height: caption ? size + size * 0.34 : size }}>
+      {word.art ? (
+        <Art id={word.art} size={size * 0.74} />
+      ) : word.pic ? (
         <span className="picture-emoji" style={{ fontSize: size * 0.62 }}>
           {word.pic}
         </span>
@@ -65,6 +69,33 @@ export function Picture({ word, size = 160 }: { word: Word; size?: number }) {
           {word.text}
         </span>
       )}
+      {caption && <WordText text={word.text} size={size * 0.28} />}
+    </div>
+  )
+}
+
+export const hasPicture = (w: Word) => Boolean(w.pic || w.art)
+export const pictureKey = (w: Word) => w.pic ?? w.art ?? w.text
+
+/** A written word with the vowel picked out in red, like the letter tiles. */
+export function WordText({ text, size = 30 }: { text: string; size?: number }) {
+  return (
+    <span className="word-text" style={{ fontSize: size }}>
+      {text.split('').map((l, i) => (
+        <b key={i} className={isVowel(l) ? 'v' : ''}>
+          {l}
+        </b>
+      ))}
+    </span>
+  )
+}
+
+/** Bottom row of every activity: Pip on the left, the buttons on the right. */
+export function Footer({ mood, children }: { mood: Mood; children?: ReactNode }) {
+  return (
+    <div className="activity-footer">
+      <Pip mood={mood} size={110} />
+      <div className="footer-actions">{children}</div>
     </div>
   )
 }

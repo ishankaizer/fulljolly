@@ -10,7 +10,7 @@ import { BuildWord } from '../activities/BuildWord'
 import { MatchPicture } from '../activities/MatchPicture'
 import { VowelSwap } from '../activities/VowelSwap'
 import { Pip } from '../components/Pip'
-import { Confetti, Icon, RoundButton, Stars, shuffle, vowelColor } from '../components/ui'
+import { Confetti, Icon, RoundButton, Stars, hasPicture, shuffle, vowelColor } from '../components/ui'
 import { go } from '../lib/router'
 
 export const SWAP_LESSON = 'swap'
@@ -36,7 +36,7 @@ function familySteps(unit: VowelUnit, family: Family): Step[] {
         render: (next) => <BuildWord unit={unit} family={family} word={w} intro={i === 0} onDone={next} />,
       }),
     )
-  shuffle(family.words.filter((w) => w.pic))
+  shuffle(family.words.filter(hasPicture))
     .slice(0, 4)
     .forEach((w, i) =>
       steps.push({
@@ -51,7 +51,7 @@ function familySteps(unit: VowelUnit, family: Family): Step[] {
 
 function swapSteps(): Step[] {
   return shuffle(vowelSwaps).map((frame, i) => {
-    const word = shuffle(frame.words.filter((w) => w.pic))[0]
+    const word = shuffle(frame.words.filter(hasPicture))[0]
     return {
       key: `swap-${word.text}`,
       render: (next) => <VowelSwap frame={frame} word={word} intro={i === 0} onDone={next} />,

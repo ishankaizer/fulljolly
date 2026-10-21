@@ -140,6 +140,8 @@ const wait = (ms: number) => new Promise((r) => window.setTimeout(r, ms))
 export async function play(...clips: Clip[]): Promise<boolean> {
   stopAudio()
   const gen = generation
+  // Chrome sometimes drops speech that starts in the same instant as a cancel().
+  await wait(60)
   for (const clip of clips) {
     if (gen !== generation) return false
     if (clip.kind === 'pause') {

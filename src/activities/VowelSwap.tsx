@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import type { SwapFrame, Vowel, Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Pip } from '../components/Pip'
-import { Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, vowelColor } from '../components/ui'
+import { Footer, Confetti, Icon, LetterTile, Picture, RoundButton, StaticTile, vowelColor } from '../components/ui'
 
 const vowels: Vowel[] = ['a', 'e', 'i', 'o', 'u']
 
@@ -54,7 +53,7 @@ export function VowelSwap({
           whileTap={{ scale: 0.94 }}
           aria-label="Hear the word"
         >
-          <Picture word={{ text: '?', pic: word.pic }} size={150} />
+          <Picture word={{ text: '?', pic: word.pic, art: word.art }} size={150} />
           {found && <Confetti pieces={28} />}
         </motion.button>
       </div>
@@ -100,14 +99,22 @@ export function VowelSwap({
         ))}
       </div>
 
-      <div className="activity-footer">
-        <Pip mood={found ? 'cheer' : middle ? 'think' : talking ? 'talk' : 'idle'} size={120} />
+      <Footer mood={found ? 'cheer' : middle ? 'think' : talking ? 'talk' : 'idle'}>
+        {!found && (
+          <RoundButton
+            label="Hear the instruction"
+            color="#fff"
+            onClick={() => say(prompt('swap-intro', 'Change the middle sound to make the word.'), pause(200), wordClip(word.text))}
+          >
+            <span style={{ color: vowelColor[target] }}>{Icon.speaker}</span>
+          </RoundButton>
+        )}
         {found && (
           <RoundButton label="Next" color={vowelColor[target]} onClick={() => onDone(mistakes)} pulse={!talking}>
             <span style={{ color: '#fff' }}>{Icon.next}</span>
           </RoundButton>
         )}
-      </div>
+      </Footer>
     </div>
   )
 }

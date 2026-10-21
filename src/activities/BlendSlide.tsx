@@ -1,10 +1,9 @@
-import { AnimatePresence, animate, motion, useMotionValue } from 'framer-motion'
+import { animate, motion, useMotionValue } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import type { VowelUnit, Word } from '../data/curriculum'
 import { pause, prompt, sfx, sound, word as wordClip } from '../lib/audio'
 import { useVoice } from '../lib/useVoice'
-import { Pip } from '../components/Pip'
-import { Confetti, Icon, LetterTile, Picture, RoundButton, vowelColor } from '../components/ui'
+import { Confetti, Footer, Icon, LetterTile, Picture, RoundButton, vowelColor } from '../components/ui'
 
 /**
  * Slide the ball under the letters: each sound plays as the ball passes it,
@@ -26,6 +25,7 @@ export function BlendSlide({
   const { talking, say } = useVoice()
   const [lit, setLit] = useState(-1)
   const [revealed, setRevealed] = useState(false)
+  const [touched, setTouched] = useState(false)
 
   const trackRef = useRef<HTMLDivElement>(null)
   const ballRef = useRef<HTMLDivElement>(null)
@@ -104,19 +104,14 @@ export function BlendSlide({
   return (
     <div className="activity blend">
       <div className="blend-stage">
-        <AnimatePresence>
-          {revealed && (
-            <motion.div
-              className="blend-reveal"
-              initial={{ scale: 0, rotate: -20, y: 40 }}
-              animate={{ scale: 1, rotate: 0, y: 0 }}
-              transition={{ type: 'spring', stiffness: 220, damping: 12 }}
-            >
-              <Picture word={word} size={170} />
-              <Confetti pieces={28} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div
+          className="blend-reveal"
+          animate={revealed ? { scale: [1, 1.3, 1.1], rotate: [0, -8, 6, 0] } : { scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Picture word={word} size={170} />
+          {revealed && <Confetti pieces={28} />}
+        </motion.div>
       </div>
 
       <div className="blend-board">
@@ -139,6 +134,16 @@ export function BlendSlide({
               <span key={i} className={`track-dot ${i <= lit ? 'track-dot-on' : ''}`} />
             ))}
           </div>
+          {!touched && !revealed && (
+            <motion.span
+              className="hint-hand"
+              aria-hidden
+              animate={{ left: ['2%', '70%'], opacity: [0, 1, 1, 0] }}
+              transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 0.6, ease: 'easeInOut' }}
+            >
+              👆
+            </motion.span>
+          )}
           <motion.div
             ref={ballRef}
             className="ball"
@@ -147,6 +152,7 @@ export function BlendSlide({
             dragConstraints={trackRef}
             dragElastic={0}
             dragMomentum={false}
+            onPointerDown={() => setTouched(true)}
             onDragStart={() => {
               reached.current = -1
             }}
@@ -165,9 +171,8 @@ export function BlendSlide({
         </div>
       </div>
 
-      <div className="activity-footer">
-        <Pip mood={revealed ? 'cheer' : talking ? 'talk' : 'idle'} size={120} />
-        {revealed && (
+      <Footer mood={revealed ? 'cheer' : talking ? 'talk' : 'idle'}>
+        {revealed ? (
           <>
             <RoundButton label="Hear it again" onClick={replay}>
               <span style={{ color }}>{Icon.speaker}</span>
@@ -176,8 +181,12 @@ export function BlendSlide({
               <span style={{ color: '#fff' }}>{Icon.next}</span>
             </RoundButton>
           </>
+        ) : (
+          <RoundButton label="Hear the instruction" onClick={() => say(prompt('blend-intro', 'Slide the ball under the letters. Say each sound!'))}>
+            <span style={{ color }}>{Icon.speaker}</span>
+          </RoundButton>
         )}
-      </div>
+      </Footer>
     </div>
   )
 }
