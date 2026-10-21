@@ -10,23 +10,35 @@ import {
   userClipUrl,
 } from '../lib/recordings'
 import { toCleanWav } from '../lib/wav'
+import { play as playClip, word as wordClip } from '../lib/audio'
 import { go } from '../lib/router'
 import { Icon, Picture, RoundButton, StaticTile, WordText } from '../components/ui'
 
 const groups: ClipGroup[] = ['sounds', 'rimes', 'words', 'prompts']
 
-/** Recording studio for grown-ups: record every sound, ending, word and instruction on this device. */
+/** Sound library for grown-ups: record every letter sound and combination, then endings, words and instructions. */
 export function Studio() {
   const [, tick] = useState(0)
   useEffect(() => onRecordingsChange(() => tick((n) => n + 1)), [])
   const [current, setCurrent] = useState<RecordItem | null>(null)
+  const [scope, setScope] = useState<ClipGroup | null>(null)
   const [message, setMessage] = useState('')
+  const heard = useRef<HTMLAudioElement | null>(null)
 
   const done = recordItems.filter((i) => hasUserClip(i.key)).length
-  const nextMissing = (after?: RecordItem) => {
-    const start = after ? recordItems.indexOf(after) + 1 : 0
-    const order = [...recordItems.slice(start), ...recordItems.slice(0, start)]
+  const soundItems = recordItems.filter((i) => i.group === 'sounds')
+  const soundsDone = soundItems.filter((i) => hasUserClip(i.key)).length
+  /** The next recording still to do, staying inside one group during a guided session. */
+  const nextMissing = (after?: RecordItem, within: ClipGroup | null = scope) => {
+    const list = within ? recordItems.filter((i) => i.group === within) : recordItems
+    const start = after ? list.indexOf(after) + 1 : 0
+    const order = [...list.slice(start), ...list.slice(0, start)]
     return order.find((i) => !hasUserClip(i.key) && i !== after) ?? null
+  }
+  const listen = (url: string) => {
+    heard.current?.pause()
+    heard.current = new Audio(url)
+    void heard.current.play()
   }
 
   if (current) {
@@ -34,8 +46,16 @@ export function Studio() {
       <Recorder
         key={current.key}
         item={current}
-        onClose={() => setCurrent(null)}
-        onSaved={() => setCurrent(nextMissing(current))}
+        onClose={() => {
+          setCurrent(null)
+          setScope(null)
+        }}
+        onSaved={() => {
+          const next = nextMissing(current)
+          setCurrent(next)
+          if (!next && scope === 'sounds') setMessage('All the letter sounds and combinations are recorded. Well done!')
+          if (!next) setScope(null)
+        }}
       />
     )
   }
@@ -59,25 +79,48 @@ export function Studio() {
         <RoundButton label="Back" onClick={() => go('/grown-ups')}>
           <span>{Icon.back}</span>
         </RoundButton>
-        <h1>Recording studio</h1>
+        <h1>Sound library</h1>
       </header>
 
       <main className="panel-stack">
         <section className="panel">
           <h2>
-            {done} of {recordItems.length} recorded
+            Letter sounds: {soundsDone} of {soundItems.length} recorded
           </h2>
           <p>
-            Record each sound in your own voice and the app will use it straight away. Do it somewhere quiet, with the
-            tablet a hand's width from your mouth.
+            You will be asked for each sound in turn: the 26 letters, then the letter combinations such as sh, ai and oo.
+            Say just the sound, not the letter's name. Each one is saved in the library below, and the app uses it straight
+            away. Do it somewhere quiet, with the tablet a hand's width from your mouth.
           </p>
           <button
             type="button"
             className="text-btn big"
-            disabled={done === recordItems.length}
-            onClick={() => setCurrent(nextMissing())}
+            disabled={soundsDone === soundItems.length}
+            onClick={() => {
+              setScope('sounds')
+              setCurrent(nextMissing(undefined, 'sounds'))
+            }}
           >
-            {done === 0 ? 'Start recording' : done === recordItems.length ? 'Everything is recorded' : 'Record the next one'}
+            {soundsDone === 0 ? 'Start with the letter sounds' : soundsDone === soundItems.length ? 'All sounds recorded' : 'Carry on with the sounds'}
+          </button>
+          {message && <p className="studio-message">{message}</p>}
+        </section>
+
+        <section className="panel">
+          <h2>
+            Everything else: {done - soundsDone} of {recordItems.length - soundItems.length} recorded
+          </h2>
+          <p>Word endings, words, and Pip's instructions. These can wait until the sounds are done.</p>
+          <button
+            type="button"
+            className="text-btn"
+            disabled={done === recordItems.length}
+            onClick={() => {
+              setScope(null)
+              setCurrent(nextMissing(undefined, null))
+            }}
+          >
+            Record the next one
           </button>
         </section>
 
@@ -89,6 +132,34 @@ export function Studio() {
               <h2>
                 {groupTitles[g]} <small className="count">{n}/{items.length}</small>
               </h2>
+              {g === 'sounds' ? (
+                <div className="sound-lib">
+                  {items.map((i) => {
+                    const url = userClipUrl(i.key)
+                    return (
+                      <div key={i.key} className="sound-lib-item">
+                        <button
+                          type="button"
+                          className={`sound-lib-tile ${url ? 'sound-lib-done' : ''}`}
+                          onClick={() => {
+                            setScope(null)
+                            setCurrent(i)
+                          }}
+                          aria-label={`Record ${i.name}`}
+                        >
+                          <span className="sound-lib-label">{i.tile}</span>
+                          <small>{i.keyword?.text}</small>
+                        </button>
+                        {url && (
+                          <button type="button" className="sound-lib-play" onClick={() => listen(url)} aria-label={`Play ${i.name}`}>
+                            ▶
+                          </button>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
               <div className="studio-chips">
                 {items.map((i) => (
                   <button
@@ -102,6 +173,7 @@ export function Studio() {
                   </button>
                 ))}
               </div>
+              )}
             </section>
           )
         })}
@@ -296,6 +368,11 @@ function Recorder({ item, onClose, onSaved }: { item: RecordItem; onClose: () =>
 
           {phase === 'ready' && (
             <div className="rec-actions">
+              {item.group === 'sounds' && item.keyword && (
+                <button type="button" className="text-btn" onClick={() => void playClip(wordClip(item.keyword!.text))}>
+                  Hear the example word “{item.keyword.text}”
+                </button>
+              )}
               <button type="button" className="rec-btn" onClick={start} aria-label="Start recording">
                 <span className="rec-dot" />
               </button>
