@@ -9,6 +9,7 @@ const tabs: { id: Tab; label: string; icon: string; path: string }[] = [
   { id: 'letters', label: 'Letters', icon: '🔤', path: '/' },
   { id: 'words', label: 'Words', icon: '🐱', path: '/words' },
   { id: 'games', label: 'Games', icon: '🎮', path: '/games' },
+  { id: 'books', label: 'Books', icon: '📚', path: '/books' },
 ]
 
 /** Top bar (title, who is playing, grown-ups door) and the bottom tab bar shared by the main screens. */

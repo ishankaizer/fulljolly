@@ -4,7 +4,16 @@ Phonics games that teach young children to read three-letter words (cat, cot, cu
 how Mama teaches: one vowel at a time, one word family at a time (‑at: bat, cat, hat… ‑am: ham, jam, ram…).
 Pip the bird guides every lesson.
 
-## How a lesson works
+## The four tabs
+
+- **Letters:** 18 letter lessons in three groups (s a t i p n / ck e h r m d / g o u l f b). Each one: hear the sound,
+  finger-trace the letter, pick the letter that makes a sound, then a Blending card (touch the dot under each letter
+  to hear its sound, and the word blends and its picture appears). Words only use letters already taught.
+- **Words:** the vowel word families (-at, -am, ...) described below.
+- **Games:** swap the middle sound, match the picture, build the word, slide and blend, which letter.
+- **Books:** short picture readers made only of words the child can sound out, plus a few tricky words.
+
+## How a word-family lesson works
 
 Each word family is one lesson:
 
@@ -32,7 +41,7 @@ make pure letter sounds ("sss", not "ess"), so **recording the letter sounds is 
 Put audio files in [`src/audio/`](src/audio/README.md) (for example `sounds/s.mp3` or `words/cat.mp3`) and they
 replace the built-in voice automatically. The grown-ups page lists what's still missing.
 
-**Grown-ups page:** press and hold the gear on the map for 2 seconds. From there you can pick the voice, change the
+**Grown-ups page:** press and hold the gear for 2 seconds, then answer the sum. From there you can pick the voice, change the
 speed, turn sound effects on or off, see the recordings checklist and clear stars.
 
 ## Running it

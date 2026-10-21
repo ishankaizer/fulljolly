@@ -1,4 +1,6 @@
 import { units, vowelSwaps, type Word } from './curriculum'
+import { readerWords } from './books'
+import { letterGroups } from './letters'
 import { promptLines } from './prompts'
 
 // Everything that can be recorded, with the guidance shown to whoever is recording.
@@ -50,6 +52,8 @@ for (const u of units) {
   for (const f of u.families) for (const w of f.words) wordMap.set(w.text, w)
 }
 for (const s of vowelSwaps) for (const w of s.words) wordMap.set(w.text, w)
+for (const g of letterGroups) for (const l of g.lessons) wordMap.set(l.keyword.text, l.keyword)
+for (const t of readerWords) if (!wordMap.has(t)) wordMap.set(t, { text: t })
 
 export const recordItems: RecordItem[] = [
   ...letters.map((l): RecordItem => ({ key: `sounds/${l}`, group: 'sounds', name: l, hint: letterHint(l), maxMs: 3000 })),

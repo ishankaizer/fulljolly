@@ -6,6 +6,9 @@ import { GrownUps } from './screens/GrownUps'
 import { Studio } from './screens/Studio'
 import { WordsTab } from './screens/WordsTab'
 import { GamesTab } from './screens/GamesTab'
+import { BooksTab } from './screens/BooksTab'
+import { BookScreen } from './screens/BookScreen'
+import { findBook } from './data/books'
 import { Scenery } from './components/Scenery'
 import type { Vowel } from './data/curriculum'
 
@@ -19,6 +22,8 @@ export function App() {
   else if (page === 'studio') screen = <Studio />
   else if (page === 'words') screen = <WordsTab />
   else if (page === 'games') screen = <GamesTab />
+  else if (page === 'books') screen = <BooksTab />
+  else if (page === 'book' && param && findBook(param)) screen = <BookScreen key={param} id={param} />
   else screen = <Home />
 
   return (

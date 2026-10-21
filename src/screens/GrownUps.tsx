@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { units, vowelSwaps } from '../data/curriculum'
+import { readerWords } from '../data/books'
+import { letterGroups } from '../data/letters'
 import { englishVoices, hasRecording, play, rime, sound, word } from '../lib/audio'
 import { go } from '../lib/router'
 import {
@@ -23,6 +25,8 @@ const allWords = [
   ...new Set([
     ...units.flatMap((u) => [u.keyword.text, ...u.families.flatMap((f) => f.words.map((w) => w.text))]),
     ...vowelSwaps.flatMap((s) => s.words.map((w) => w.text)),
+    ...letterGroups.flatMap((g) => g.lessons.map((l) => l.keyword.text)),
+    ...readerWords,
   ]),
 ].sort()
 const allRimes = units.flatMap((u) => u.families)
