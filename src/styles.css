@@ -82,7 +82,7 @@ h2 {
 }
 
 .screen {
-  overflow-x: clip;
+  overflow: clip;
   min-height: 100%;
   min-height: 100dvh;
   display: flex;
