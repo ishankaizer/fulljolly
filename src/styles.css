@@ -1876,3 +1876,11 @@ h2 {
   font-size: 20px;
   color: var(--ink-soft);
 }
+
+.share-counts {
+  font-size: 15px;
+}
+.share-meter {
+  margin: 12px 0 4px;
+  width: 100%;
+}

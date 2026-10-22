@@ -2,7 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// While developing, the voice library's server functions run from scripts/dev-api.mjs (npm run dev:api).
+const api = { '/api': 'http://localhost:4180' }
+
 export default defineConfig({
+  server: { proxy: api },
+  preview: { proxy: api },
   plugins: [
     react(),
     VitePWA({
@@ -10,6 +15,8 @@ export default defineConfig({
       injectRegister: false, // registered by hand in main.tsx so it can check for updates
       includeAssets: ['icon.svg'],
       workbox: {
+        // The voice library's server functions must always reach the server.
+        navigateFallbackDenylist: [/^\/api\//],
         // Cache the app shell, fonts and every recorded sound so lessons work offline.
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,mp3,m4a,ogg,wav}'],
       },

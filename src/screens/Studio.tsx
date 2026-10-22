@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { groupTitles, recordItems, type ClipGroup, type RecordItem } from '../data/recordingList'
+import { checkPasscode, publishPending, rememberPasscode, savedPasscode, syncPublished } from '../lib/publish'
 import {
   deleteRecording,
   exportRecordings,
   hasUserClip,
   importRecordings,
   onRecordingsChange,
+  publishedClipCount,
   saveRecording,
+  unpublishedKeys,
   userClipUrl,
 } from '../lib/recordings'
 import { toCleanWav } from '../lib/wav'
@@ -24,6 +27,14 @@ export function Studio() {
   const [scope, setScope] = useState<ClipGroup | null>(null)
   const [message, setMessage] = useState('')
   const heard = useRef<HTMLAudioElement | null>(null)
+  const [passcode, setPasscode] = useState(savedPasscode)
+  const [sharing, setSharing] = useState<{ busy: boolean; done: number; total: number; message: string; failed: string[] }>({
+    busy: false,
+    done: 0,
+    total: 0,
+    message: '',
+    failed: [],
+  })
 
   const done = recordItems.filter((i) => hasUserClip(i.key)).length
   const soundItems = recordItems.filter((i) => i.group === 'sounds')
@@ -35,6 +46,43 @@ export function Studio() {
     const order = [...list.slice(start), ...list.slice(0, start)]
     return order.find((i) => !hasUserClip(i.key) && i !== after) ?? null
   }
+  const pending = unpublishedKeys().length
+
+  const publishNow = async () => {
+    const code = passcode.trim()
+    if (!code) return setSharing((x) => ({ ...x, message: 'Type the passcode first.' }))
+    setSharing({ busy: true, done: 0, total: pending, message: 'Checking the passcode…', failed: [] })
+    const check = await checkPasscode(code)
+    if (check !== 'ok') {
+      const why = {
+        wrong: "That passcode isn't right.",
+        'not-configured': 'Sharing is not set up yet. Ask whoever looks after the app to finish the one-time setup.',
+        offline: "Can't reach the voice library. Check the internet connection and try again.",
+      }[check]
+      return setSharing({ busy: false, done: 0, total: 0, message: why, failed: [] })
+    }
+    rememberPasscode(code)
+    const report = await publishPending(code, (done, total) =>
+      setSharing((x) => ({ ...x, done, total, message: `Sharing ${done} of ${total}…` })),
+    )
+    await syncPublished()
+    setSharing({
+      busy: false,
+      done: 0,
+      total: 0,
+      failed: report.failed.map((f) => `${f.key} (${f.reason})`),
+      message: report.failed.length
+        ? `Shared ${report.published.length}. ${report.failed.length} could not be shared: tap Share again to retry.`
+        : `Shared ${report.published.length} recording${report.published.length === 1 ? '' : 's'}. Every tablet will use them the next time it opens the app online.`,
+    })
+  }
+
+  const getLatest = async () => {
+    setSharing((x) => ({ ...x, busy: true, message: 'Checking the voice library…', failed: [] }))
+    const n = await syncPublished()
+    setSharing((x) => ({ ...x, busy: false, message: n ? `Downloaded ${n} new recording${n === 1 ? '' : 's'}.` : 'This tablet already has the latest voice.' }))
+  }
+
   const listen = (url: string) => {
     heard.current?.pause()
     heard.current = new Audio(url)
@@ -122,6 +170,43 @@ export function Studio() {
           >
             Record the next one
           </button>
+        </section>
+
+        <section className="panel">
+          <h2>Share with every tablet</h2>
+          <p>
+            Recordings made here stay on this tablet until you share them. Sharing puts them in the app's voice library, and every
+            tablet downloads them automatically, so everyone hears the same voice. Re-recording a sound and sharing again
+            replaces it everywhere.
+          </p>
+          <p className="share-counts">
+            <strong>{pending}</strong> waiting to be shared · <strong>{publishedClipCount()}</strong> from the library on this tablet
+          </p>
+          <label className="field">
+            <span>Passcode</span>
+            <input
+              type="password"
+              autoComplete="off"
+              value={passcode}
+              onChange={(e) => setPasscode(e.target.value)}
+              placeholder="The passcode for sharing"
+            />
+          </label>
+          <div className="row">
+            <button type="button" className="text-btn big keep" disabled={sharing.busy || pending === 0} onClick={publishNow}>
+              {pending === 0 ? 'Nothing new to share' : `Share ${pending} recording${pending === 1 ? '' : 's'}`}
+            </button>
+            <button type="button" className="text-btn" disabled={sharing.busy} onClick={getLatest}>
+              Get the latest voice
+            </button>
+          </div>
+          {sharing.busy && sharing.total > 0 && (
+            <div className="meter share-meter" aria-hidden>
+              <div className="meter-fill" style={{ width: `${Math.round((sharing.done / sharing.total) * 100)}%` }} />
+            </div>
+          )}
+          {sharing.message && <p className="studio-message">{sharing.message}</p>}
+          {sharing.failed.length > 0 && <p className="checklist-missing">Not shared: {sharing.failed.join(', ')}</p>}
         </section>
 
         {groups.map((g) => {

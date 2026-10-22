@@ -14,6 +14,7 @@ Before pushing, run the checks that apply:
 - `npx tsc --noEmit` and `npm run build` always.
 - `npm run check:course` after touching anything in `src/data/` (words, lessons, sentences, pictures). It must pass.
 - `npm run plan` after changing the course, and commit the regenerated `docs/LESSON_PLAN.md`.
+- `npm run test:api` after touching `api/` or `src/lib/recordings.ts` / `publish.ts`.
 
 Commit messages describe the change in plain words, with the attribution lines the session asks for.
 
@@ -38,6 +39,12 @@ Commit messages describe the change in plain words, with the attribution lines t
 - Every word may only use sounds taught earlier on the pathway. Keep it that way when adding content.
 - Audio: a recording made in the app beats a bundled file in `src/audio/`, which beats the device voice
   (`src/lib/audio.ts`). Recordings are kept in IndexedDB (`src/lib/recordings.ts`).
+- **The shared voice library.** Recordings made on one tablet are published (one button, passcode-protected) to
+  Vercel Blob storage via the serverless functions in `api/` (rules in `api/_voice.ts`, storage in
+  `api/_blobStore.ts`), and every tablet downloads them on launch (`src/lib/publish.ts`). Own recording beats
+  shared beats bundled file beats device voice. Setup steps for the owner are in `docs/PUBLISHING.md`; the owner must
+  connect a Blob store and set `PUBLISH_PASSCODE` in Vercel before sharing works. `npm run dev:api` runs the same
+  functions locally with files in `.voice-dev/`. Relative imports in `api/` need a `.js` extension.
 - Progress and settings are saved on the device, one set of stars per child (`src/lib/settings.ts`).
 
 ## Testing
@@ -62,6 +69,8 @@ sent "class work" to follow.
 
 ## Still to do (as agreed with the owner)
 
-- Record the sounds (the guided sound library is built; the owner's mother records them on her tablet).
+- Record the sounds (the guided sound library and one-button sharing are built; waiting for the owner to finish the
+  Vercel setup in `docs/PUBLISHING.md`, then the owner's mother records on her tablet).
+- "Record while you play a lesson" mode, so recordings are made in context with the lesson on screen.
 - Songs (must be original), rewards and stickers, a progress view of which words each child finds hard, our own
   illustrations in place of emoji, PNG app icons, syncing between devices.

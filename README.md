@@ -58,6 +58,8 @@ make pure letter sounds ("sss", not "ess"), so **recording the letter sounds is 
 Put audio files in [`src/audio/`](src/audio/README.md) (for example `sounds/s.mp3` or `words/cat.mp3`) and they
 replace the built-in voice automatically. The grown-ups page lists what's still missing.
 
+**Sharing the voice with every tablet:** recordings made in the sound library are shared with one button and every tablet downloads them automatically. One-time setup: [`docs/PUBLISHING.md`](docs/PUBLISHING.md).
+
 **Grown-ups page:** press and hold the gear for 2 seconds, then answer the sum. From there you can pick the voice, change the
 speed, turn sound effects on or off, see the recordings checklist and clear stars.
 

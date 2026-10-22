@@ -9,10 +9,13 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "check:course": "node scripts/check-course.mjs",
-    "plan": "node scripts/lesson-plan.mjs"
+    "plan": "node scripts/lesson-plan.mjs",
+    "test:api": "node scripts/test-api.mjs",
+    "dev:api": "node scripts/dev-api.mjs"
   },
   "dependencies": {
     "@fontsource/andika": "^5.3.0",
+    "@vercel/blob": "^2.8.2",
     "framer-motion": "^14.5.0",
     "howler": "^2.2.4",
     "react": "^19.3.1",
@@ -20,6 +23,7 @@
   },
   "devDependencies": {
     "@types/howler": "^2.2.13",
+    "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",

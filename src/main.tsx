@@ -8,6 +8,7 @@ import '@fontsource/andika/latin-700.css'
 import './styles.css'
 import { App } from './App'
 import { loadRecordings } from './lib/recordings'
+import { syncPublished } from './lib/publish'
 
 // Phones and tablets keep sound off until the first touch. Wake both the audio
 // player and the built-in voice on that first touch so later lessons can talk.
@@ -36,7 +37,16 @@ registerSW({
   },
 })
 
-void loadRecordings()
+// Bring this tablet's voice up to date with the shared library: on launch, and when the app comes back to the
+// front after a while. Quietly does nothing offline.
+let lastSync = Date.now()
+void loadRecordings().then(() => syncPublished())
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && Date.now() - lastSync > 10 * 60 * 1000) {
+    lastSync = Date.now()
+    void syncPublished()
+  }
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
