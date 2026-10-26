@@ -1884,3 +1884,71 @@ h2 {
   margin: 12px 0 4px;
   width: 100%;
 }
+
+/* ---------- school and site logos ---------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.brand-school {
+  height: clamp(44px, 7vh, 60px);
+  width: auto;
+  filter: drop-shadow(0 3px 5px rgba(29, 43, 68, 0.25));
+  flex: none;
+}
+.brand-circle {
+  height: clamp(40px, 6.4vh, 56px);
+  width: auto;
+  min-width: 0;
+  padding: 4px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 3px 0 rgba(29, 43, 68, 0.15);
+}
+/* The school crest sits quietly at the end of every lesson and page header. */
+.lesson-top::after {
+  content: '';
+  flex: none;
+  width: 36px;
+  height: 36px;
+  margin-left: auto;
+  background: url('/brand/school.png') center / contain no-repeat;
+  opacity: 0.9;
+}
+@media (max-height: 520px), (max-width: 380px) {
+  .lesson-top::after {
+    width: 28px;
+    height: 28px;
+  }
+  .brand-circle {
+    padding: 3px 8px;
+  }
+}
+
+.about-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.about-logos img:first-child {
+  height: 90px;
+}
+.about-logos img:last-child {
+  height: 70px;
+}
+.lesson-top:has(> .abc-nav)::after {
+  margin-left: 0;
+}

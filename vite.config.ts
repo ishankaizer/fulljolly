@@ -13,7 +13,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: false, // registered by hand in main.tsx so it can check for updates
-      includeAssets: ['icon.svg'],
+      includeAssets: ['icon.svg', 'brand/*.png'],
       workbox: {
         // The voice library's server functions must always reach the server.
         navigateFallbackDenylist: [/^\/api\//],
@@ -21,15 +21,17 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,mp3,m4a,ogg,wav}'],
       },
       manifest: {
-        name: 'Word Nest',
-        short_name: 'Word Nest',
-        description: 'Phonics games for reading three-letter words.',
+        name: 'Learning Circle',
+        short_name: 'Learning Circle',
+        description: 'Phonics lessons from Yellow House Foundation School.',
         theme_color: '#4cb5f5',
         background_color: '#bfe8ff',
         display: 'fullscreen',
         orientation: 'any',
         icons: [
-          { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
+          { src: 'brand/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'brand/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'brand/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
     }),

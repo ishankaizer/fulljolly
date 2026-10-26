@@ -24,7 +24,11 @@ export function TabShell({ tab, title, children }: { tab: Tab; title: string; ch
   return (
     <div className="screen tab-screen">
       <header className="home-top">
-        <h1 className="home-title">{title}</h1>
+        <div className="brand">
+          <img className="brand-school" src="/brand/school.png" alt="Yellow House Foundation School" />
+          <img className="brand-circle" src="/brand/learning-circle.png" alt="" />
+          <h1 className="visually-hidden">Learning Circle: {title}</h1>
+        </div>
         <div className="home-top-right">
           <button
             type="button"

@@ -54,6 +54,11 @@ export function GrownUps() {
       </header>
 
       <main className="panel-stack">
+        <section className="panel about-logos">
+          <img src="/brand/school.png" alt="Yellow House Foundation School" />
+          <img src="/brand/learning-circle.png" alt="Learning Circle, supporting education" />
+        </section>
+
         <section className="panel">
           <h2>Lesson plan</h2>
           <p>The whole course in order: every lesson, the words it uses, and what children do in each.</p>

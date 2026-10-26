@@ -27,6 +27,14 @@ Commit messages describe the change in plain words, with the attribution lines t
 - **A new version only shows after the old cached copy is replaced.** The app is a PWA; it now checks for updates on
   launch and every hour. If the owner says it "looks the same", check Vercel's deployment first, then the cache.
 
+## Branding
+
+The site is called **Learning Circle** and belongs to **Yellow House Foundation School** (Mama's school). Logos are in
+`public/brand/` (processed from the owner's images: enlarged, sharpened, transparent background): `school.png` (crest),
+`learning-circle.png`, `gears.png`, and the PNG app icons. The tab-screen header shows both; every lesson and page
+header ends with a small crest (`.lesson-top::after` in `styles.css`); the grown-ups page shows both large. Keep the
+crest small, it must never get in the way of a lesson.
+
 ## How it is built
 
 - React + Vite + TypeScript, static site, no server. Framer Motion for animation, Howler for audio.
@@ -73,4 +81,4 @@ sent "class work" to follow.
   Vercel setup in `docs/PUBLISHING.md`, then the owner's mother records on her tablet).
 - "Record while you play a lesson" mode, so recordings are made in context with the lesson on screen.
 - Songs (must be original), rewards and stickers, a progress view of which words each child finds hard, our own
-  illustrations in place of emoji, PNG app icons, syncing between devices.
+  illustrations in place of emoji, syncing between devices.
