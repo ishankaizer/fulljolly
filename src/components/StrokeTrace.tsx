@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { GLYPH_H, GLYPH_W, LINES, strokes, strokeStarts } from '../data/glyphs'
 import { sfx } from '../lib/audio'
-import { Confetti } from './ui'
+import { Confetti, Icon } from './ui'
 
 const STEP = 3
 const INK = 7 // pen width, in glyph units
@@ -203,7 +203,7 @@ export function StrokeTrace({
       {done && <Confetti pieces={24} />}
       {done && (
         <span className="stroke-trace-done" aria-label="Done">
-          ✓
+          {Icon.check}
         </span>
       )}
       {!done && (

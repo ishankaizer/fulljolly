@@ -11,7 +11,7 @@ export function MeetFamily({ unit, family, onDone }: { unit: VowelUnit; family: 
   const color = vowelColor[unit.vowel]
   const ending = rime(family.rime, family.say)
   // Narrow phones fit five pictures per row, so nine words take two rows instead of three.
-  const pictureSize = Math.min(fit(84, 0.105), Math.floor((window.innerWidth - 60) / 5.2))
+  const pictureSize = Math.min(fit(84, 0.09), Math.floor((window.innerWidth - 116) / 5))
   const intro = () => say(prompt('meet-family'), pause(150), ending, pause(500), ending)
 
   useEffect(() => {

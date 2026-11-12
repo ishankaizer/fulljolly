@@ -4,6 +4,7 @@ import { go } from '../lib/router'
 import { loadProgress } from '../lib/settings'
 import { Stars, vowelColor } from '../components/ui'
 import { GroupGrid } from '../components/GroupGrid'
+import { Pic } from '../components/Pic'
 import { TabShell } from '../components/TabShell'
 
 /** Words tab: one banner per vowel, each leading to its word families (-at, -am, ...). */
@@ -38,7 +39,7 @@ function Banners() {
             aria-label={`Letter ${unit.vowel}`}
           >
             <span className="banner-tile">{unit.vowel}</span>
-            <span className="banner-pic">{unit.keyword.pic}</span>
+            <span className="banner-pic">{unit.keyword.pic && <Pic e={unit.keyword.pic} size={52} />}</span>
             <span className="banner-info">
               <span className="banner-chips">
                 {unit.families.map((f, j) => (

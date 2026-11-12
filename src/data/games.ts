@@ -9,14 +9,14 @@ export interface Game {
 export const SWAP_ID = 'swap'
 
 export const games: Game[] = [
-  { id: SWAP_ID, color: '#ff6b9a', pic: '🐱', label: 'Swap the middle sound' },
-  { id: 'game-match', color: '#2f95d6', pic: '🖼️', label: 'Match the picture' },
-  { id: 'game-build', color: '#2fbf71', pic: '🧱', label: 'Build the word' },
-  { id: 'game-blend', color: '#9b6bff', pic: '🛝', label: 'Slide and blend' },
-  { id: 'game-letters', color: '#f2a900', pic: '🔊', label: 'Which sound?' },
-  { id: 'game-tiles', color: '#e0638a', pic: '🧩', label: 'Build it from sounds' },
-  { id: 'game-pickword', color: '#7a6ff0', pic: '👂', label: 'Which word did you hear?' },
-  { id: 'game-sentence', color: '#2fb7a3', pic: '📝', label: 'Build the sentence' },
+  { id: SWAP_ID, color: '#e85d8f', pic: '🐱', label: 'Swap the middle sound' },
+  { id: 'game-match', color: '#2e8bff', pic: '🖼️', label: 'Match the picture' },
+  { id: 'game-build', color: '#2fb86a', pic: '🧱', label: 'Build the word' },
+  { id: 'game-blend', color: '#7c5cff', pic: '🛝', label: 'Slide and blend' },
+  { id: 'game-letters', color: '#f29a12', pic: '🔊', label: 'Which sound?' },
+  { id: 'game-tiles', color: '#e85d8f', pic: '🧩', label: 'Build it from sounds' },
+  { id: 'game-pickword', color: '#7c5cff', pic: '👂', label: 'Which word did you hear?' },
+  { id: 'game-sentence', color: '#17b3a3', pic: '📝', label: 'Build the sentence' },
 ]
 
 export const isGameId = (id: string) => games.some((g) => g.id === id)

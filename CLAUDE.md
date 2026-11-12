@@ -21,7 +21,8 @@ Commit messages describe the change in plain words, with the attribution lines t
 ## Things that have gone wrong before
 
 - **Never ship something that could blank the pictures.** A bundled colour emoji font drew empty boxes and cannot be
-  drawn by iOS Safari. Pictures use the device's own emoji, or drawn SVGs in `src/components/art.tsx`.
+  drawn by iOS Safari. Pictures are now SVG files from one illustration set (see "Design language"); `Pic` falls back
+  to the device's emoji if a file fails to load.
 - **Emoji must be Emoji 13 or older** (older tablets cannot show newer ones), and **no two words may share a picture**.
   `check:course` enforces both.
 - **A new version only shows after the old cached copy is replaced.** The app is a PWA; it now checks for updates on
@@ -34,6 +35,35 @@ The site is called **Learning Circle** and belongs to **Yellow House Foundation 
 `learning-circle.png`, `gears.png`, and the PNG app icons. The tab-screen header shows both; every lesson and page
 header ends with a small crest (`.lesson-top::after` in `styles.css`); the grown-ups page shows both large. Keep the
 crest small, it must never get in the way of a lesson.
+
+## Design language (the owner asked for a full visual overhaul, Nov 2026)
+
+The old sky-and-meadow look was only a skeleton. Keep everything in this one language:
+
+- **Tokens** are at the top of `src/styles.css`: warm paper background, navy ink, and the palette coral / teal / violet
+  / blue / orange / green / sun yellow (from the school crest and the Learning Circle gears). Use the variables, not
+  new hex colours.
+- **Depth is a solid edge, never a blurry shadow**: cards are white with `var(--ring)` and a `0 5px 0` edge; coloured
+  blocks use an inset darker bottom edge.
+- **Two fonts**: Fredoka (`--ui`) for the interface, Andika (`--read`) for anything a child reads (letters, words,
+  sentences), because its letter shapes match handwriting.
+- **No emoji characters in the interface.** Interface icons are the stroke icons in `Icon` (`src/components/ui.tsx`).
+  Pictures are drawn by `<Pic e="🐱">` (`src/components/Pic.tsx`), which shows `public/pics/<code>.svg` from the
+  Fluent Emoji Flat set (MIT). `npm run pictures` (also run by `npm run build`) rewrites `public/pics/` from every
+  emoji found in `src/`, and fails if one has no illustration. Words without a good picture get a drawing in
+  `src/components/art.tsx`.
+- **Pip the mascot** (`src/components/Pip.tsx`) is a yellow bird with the crest's red tuft. Moods: idle, talk, cheer,
+  think, proud, cheerUp. Wrong answers are never punished: Pip encourages.
+- **The well-done screen** shows stars and "you are getting stronger at these": the words, sounds or sentences that
+  took more than one try, each tappable to hear again. They are also saved per child (`recordPractice` in
+  `src/lib/settings.ts`) for the teacher's progress view to come.
+
+## Bundled sounds
+
+`src/audio/sounds/` holds the 26 letter sounds and `qu` (Open Letter Sounds, CC0) plus `sh` and `ch` (cut from
+Wikimedia Commons recordings, CC BY-SA 3.0). Sources, licences and caveats are in `src/audio/CREDITS.md`. They were
+machine-checked only; nobody on the project has listened yet. `th`, `ng` and the long vowels still use the device
+voice. A recording made in the app always wins.
 
 ## How it is built
 
@@ -80,5 +110,12 @@ sent "class work" to follow.
 - Record the sounds (the guided sound library and one-button sharing are built; waiting for the owner to finish the
   Vercel setup in `docs/PUBLISHING.md`, then the owner's mother records on her tablet).
 - "Record while you play a lesson" mode, so recordings are made in context with the lesson on screen.
-- Songs (must be original), rewards and stickers, a progress view of which words each child finds hard, our own
-  illustrations in place of emoji, syncing between devices.
+- **Overhaul steps still to do** (owner said "go" on the whole plan): teacher mode behind a PIN with class list,
+  per-child progress (use the saved practice lists), lesson locking and class-work links, with student mode as the
+  locked default; rebuilt and new games; vowel pages with story lines, connected stories, tests and quizzes;
+  streaks, stickers, share buttons, printable worksheets.
+- Replace vague pictures with drawings (sat, vat, beg, fed, fit, wag, zip, men, and similar).
+- Bundled recordings for `th`, `ng` and the long vowels, in a voice that matches the letter sounds.
+- The owner allowed Figma AI credits (Rapido org file, page "Trash page temp dump") for generated images such as book
+  scenes. Not used yet.
+- Songs (must be original), syncing between devices.

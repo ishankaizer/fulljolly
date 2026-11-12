@@ -3,6 +3,7 @@ import { games, SWAP_ID } from '../data/games'
 import { go } from '../lib/router'
 import { loadProgress } from '../lib/settings'
 import { Stars, StaticTile } from '../components/ui'
+import { Pic } from '../components/Pic'
 import { TabShell } from '../components/TabShell'
 
 /** Games tab: practice games that never run out, using every word the child can sound out. */
@@ -38,7 +39,9 @@ function GameBanners() {
               <StaticTile letter="t" size="md" />
             </span>
           ) : (
-            <span className="banner-tile game-tile">{g.pic}</span>
+            <span className="banner-tile game-tile">
+              <Pic e={g.pic} size={52} />
+            </span>
           )}
           <span className="banner-label">{g.label}</span>
           <span className="banner-info">

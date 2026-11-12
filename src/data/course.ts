@@ -87,7 +87,7 @@ export const groups: Group[] = [
     id: 'g1',
     tab: 'sounds',
     title: 'Group 1',
-    color: '#ff6f6f',
+    color: '#ff6b5e',
     animals: ['🦩', '🐯'],
     goal: 'First sounds. Enough letters to blend the first real words.',
     lessons: [
@@ -103,7 +103,7 @@ export const groups: Group[] = [
     id: 'g2',
     tab: 'sounds',
     title: 'Group 2',
-    color: '#b86be0',
+    color: '#7c5cff',
     animals: ['🐨', '🦒'],
     goal: 'Blend and read short words such as cat, hen, mat and red.',
     lessons: [
@@ -119,7 +119,7 @@ export const groups: Group[] = [
     id: 'g3',
     tab: 'sounds',
     title: 'Group 3',
-    color: '#2fb7a3',
+    color: '#17b3a3',
     animals: ['🦜', '🐘'],
     goal: 'All five short vowels. Read three-letter words in every family.',
     lessons: [
@@ -135,7 +135,7 @@ export const groups: Group[] = [
     id: 'g4',
     tab: 'sounds',
     title: 'Group 4',
-    color: '#f2a900',
+    color: '#f29a12',
     animals: ['🦘', '🐻'],
     goal: 'The rest of the alphabet: all 26 letter sounds.',
     lessons: [
@@ -151,7 +151,7 @@ export const groups: Group[] = [
     id: 'g5',
     tab: 'sounds',
     title: 'Group 5',
-    color: '#2f95d6',
+    color: '#2e8bff',
     animals: ['🐬', '🦀'],
     goal: 'Two letters, one sound: sh, ch, th, ng and qu.',
     lessons: [
@@ -166,7 +166,7 @@ export const groups: Group[] = [
     id: 'g6',
     tab: 'sounds',
     title: 'Group 6',
-    color: '#2fbf71',
+    color: '#2fb86a',
     animals: ['🦉', '🐢'],
     goal: 'Two vowels back to back that make one sound: ai, ee, oa and oo.',
     lessons: [
@@ -190,7 +190,7 @@ export const groups: Group[] = [
     id: 'g7',
     tab: 'sounds',
     title: 'Group 7',
-    color: '#e0638a',
+    color: '#e85d8f',
     animals: ['🦊', '🐼'],
     goal: 'Vowels with r, and the sounds of cow, coin and cloud.',
     lessons: [
@@ -212,7 +212,7 @@ export const groups: Group[] = [
     id: 'g8',
     tab: 'sounds',
     title: 'Group 8',
-    color: '#7a6ff0',
+    color: '#7c5cff',
     animals: ['🦄', '🐧'],
     goal: 'More ways to spell long vowel sounds: ay, ea, igh and ie.',
     lessons: [
@@ -228,7 +228,7 @@ export const groups: Group[] = [
     id: 'blends-start',
     tab: 'words',
     title: 'Four-letter words: starts',
-    color: '#ff8a3d',
+    color: '#f29a12',
     animals: ['🐸', '🥁'],
     goal: 'Blend two consonants at the start of a word: clap, frog, stop.',
     lessons: [
@@ -244,7 +244,7 @@ export const groups: Group[] = [
     id: 'blends-end',
     tab: 'words',
     title: 'Four-letter words: endings',
-    color: '#3a9bdc',
+    color: '#2e8bff',
     animals: ['⛺', '🏦'],
     goal: 'Blend two consonants at the end of a word: hand, lamp, milk.',
     lessons: [
@@ -256,7 +256,7 @@ export const groups: Group[] = [
     id: 'tricky',
     tab: 'sentences',
     title: 'Tricky words',
-    color: '#8a5cd0',
+    color: '#7c5cff',
     animals: ['🦉', '🦋'],
     goal: 'Common words that cannot be sounded out, learned by sight.',
     lessons: [
@@ -302,7 +302,7 @@ export const groups: Group[] = [
     id: 'sentences',
     tab: 'sentences',
     title: 'Sentences',
-    color: '#2fbf71',
+    color: '#2fb86a',
     animals: ['📖', '✏️'],
     goal: 'String words together: read a sentence, match it to its picture, and build it.',
     lessons: [

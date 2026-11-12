@@ -22,7 +22,7 @@ export const books: Book[] = [
   {
     id: 'a',
     title: 'The Cat Sat',
-    color: '#ff7a45',
+    color: '#ff6b5e',
     cover: 'cat',
     pages: [
       { sentence: 'The cat sat on a mat.', pics: ['cat', 'mat'] },
@@ -34,7 +34,7 @@ export const books: Book[] = [
   {
     id: 'e',
     title: 'The Hen',
-    color: '#2fbf71',
+    color: '#2fb86a',
     cover: 'hen',
     pages: [
       { sentence: 'The hen is in a pen.', pics: ['hen', 'pen'] },
@@ -46,7 +46,7 @@ export const books: Book[] = [
   {
     id: 'i',
     title: 'The Pig',
-    color: '#9b6bff',
+    color: '#7c5cff',
     cover: 'pig',
     pages: [
       { sentence: 'The pig is big.', pics: ['pig'] },
@@ -58,7 +58,7 @@ export const books: Book[] = [
   {
     id: 'o',
     title: 'The Dog',
-    color: '#2f95d6',
+    color: '#2e8bff',
     cover: 'dog',
     pages: [
       { sentence: 'The dog is hot.', pics: ['dog', 'hot'] },
@@ -70,7 +70,7 @@ export const books: Book[] = [
   {
     id: 'u',
     title: 'The Bug',
-    color: '#f2a900',
+    color: '#f29a12',
     cover: 'bug',
     pages: [
       { sentence: 'The sun is hot.', pics: ['sun', 'hot'] },

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useEffect } from 'react'
 import { familyId, units, type Vowel } from '../data/curriculum'
 import { pause, sound, word } from '../lib/audio'
+import { Pic } from '../components/Pic'
 import { go } from '../lib/router'
 import { loadProgress } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
@@ -41,7 +42,7 @@ export function VowelScreen({ vowel }: { vowel: Vowel }) {
           aria-label={`Hear ${vowel}`}
         >
           {vowel}
-          <span className="vowel-keyword">{unit.keyword.pic}</span>
+          <span className="vowel-keyword">{unit.keyword.pic && <Pic e={unit.keyword.pic} size={72} />}</span>
         </motion.button>
         <Pip mood={talking ? 'talk' : 'idle'} size={110} />
       </section>

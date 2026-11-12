@@ -16,8 +16,8 @@ import {
 import { games, isGameId } from '../data/games'
 import { letterHint } from '../data/recordingList'
 import { allWords, trickyList, wordByText } from '../data/vocab'
-import { prompt, sfx, sound } from '../lib/audio'
-import { saveStars } from '../lib/settings'
+import { prompt, sfx, sound, word as wordClip } from '../lib/audio'
+import { recordPractice, saveStars } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
 import { MeetFamily } from '../activities/MeetFamily'
 import { BlendSlide } from '../activities/BlendSlide'
@@ -36,7 +36,7 @@ import { BuildWord } from '../activities/BuildWord'
 import { MatchPicture } from '../activities/MatchPicture'
 import { VowelSwap } from '../activities/VowelSwap'
 import { Pip } from '../components/Pip'
-import { Confetti, Icon, Picture, RoundButton, Stars, fit, hasPicture, shuffle, vowelColor } from '../components/ui'
+import { Confetti, Icon, Picture, RoundButton, Stars, WordText, fit, hasPicture, shuffle, vowelColor } from '../components/ui'
 import { go } from '../lib/router'
 
 export const SWAP_LESSON = SWAP
@@ -220,7 +220,7 @@ function gameSteps(id: string): Step[] {
         const options = shuffle([target, ...shuffle(soundLessons.filter((l) => l.label !== target.label)).slice(0, 2)])
         return {
           key: `letter-${target.id}`,
-          render: (next) => <PickLetter target={target} options={options} color="#f2a900" intro={i === 0} onDone={next} />,
+          render: (next) => <PickLetter target={target} options={options} color="#f29a12" intro={i === 0} onDone={next} />,
         }
       })
   }
@@ -229,16 +229,16 @@ function gameSteps(id: string): Step[] {
       .slice(0, 6)
       .map((s, i) => ({
         key: `sentence-${s.text}`,
-        render: (next) => <SentenceBuild sentence={s} color="#2fb7a3" intro={i === 0} onDone={next} />,
+        render: (next) => <SentenceBuild sentence={s} color="#17b3a3" intro={i === 0} onDone={next} />,
       }))
   }
   if (id === 'game-tiles' || id === 'game-pickword') {
     const pool = shuffle(allWords.filter((w) => hasPicture(w) && w.text.length >= 3)).slice(0, 8)
     return pool.map((w, i): Step => {
       if (id === 'game-tiles')
-        return { key: `tiles-${w.text}`, render: (next) => <BuildTiles word={w} color="#e0638a" intro={i === 0} onDone={next} /> }
+        return { key: `tiles-${w.text}`, render: (next) => <BuildTiles word={w} color="#e85d8f" intro={i === 0} onDone={next} /> }
       const options = wordOptions(w, [])
-      return { key: `pick-${w.text}`, render: (next) => <PickWord target={w} options={options} color="#7a6ff0" intro={i === 0} onDone={next} /> }
+      return { key: `pick-${w.text}`, render: (next) => <PickWord target={w} options={options} color="#7c5cff" intro={i === 0} onDone={next} /> }
     })
   }
   // The three-letter games use words that belong to a vowel family.
@@ -268,6 +268,18 @@ export const lessonOrder = pathway
 
 export const isLessonId = (id: string) => id === SWAP || isGameId(id) || Boolean(findFamily(id) || findLesson(id))
 
+/** What a step was practising, worked out from its key: "word:cat", "sound:sh" or "sentence:The cat sat." */
+function subjectOf(key: string, lesson?: LessonData): string | undefined {
+  const at = key.indexOf('-')
+  if (at < 0) return undefined
+  const kind = key.slice(0, at)
+  const rest = key.slice(at + 1)
+  if (kind === 'letter') return `sound:${findLesson(rest)?.lesson.label ?? rest}`
+  if (/^\d+$/.test(rest)) return lesson ? `sound:${lesson.label}` : undefined
+  if (rest.includes(' ') || /[.?!]$/.test(rest)) return `sentence:${rest}`
+  return wordByText(rest) ? `word:${rest}` : undefined
+}
+
 const starsFor = (mistakes: number) => (mistakes <= 1 ? 3 : mistakes <= 4 ? 2 : 1)
 
 const backTo = (kind?: LessonData['kind']) =>
@@ -293,9 +305,10 @@ export function Lesson({ id }: { id: string }) {
   }, [id, attempt])
   const [index, setIndex] = useState(0)
   const [mistakes, setMistakes] = useState(0)
+  const [results, setResults] = useState<{ subject: string; missed: boolean }[]>([])
   const [noteOpen, setNoteOpen] = useState(false)
 
-  const color = family ? vowelColor[family.unit.vowel] : course ? course.group.color : (games.find((g) => g.id === id)?.color ?? '#ff6b9a')
+  const color = family ? vowelColor[family.unit.vowel] : course ? course.group.color : (games.find((g) => g.id === id)?.color ?? '#e85d8f')
   const finished = index >= steps.length
   const back = () => go(family ? `/vowel/${family.unit.vowel}` : backTo(course?.lesson.kind))
   const isSound = course?.lesson.kind === 'sound'
@@ -309,13 +322,19 @@ export function Lesson({ id }: { id: string }) {
           ? 'Sentences'
           : ''
 
+  const missed = [...new Set(results.filter((r) => r.missed).map((r) => r.subject))]
+
   const next = (m = 0) => {
     setMistakes((total) => total + m)
+    const subject = subjectOf(steps[index].key, course?.lesson)
+    if (subject) setResults((r) => [...r, { subject, missed: m > 0 }])
     setIndex((i) => i + 1)
   }
 
   useEffect(() => {
-    if (finished) saveStars(id, starsFor(mistakes))
+    if (!finished) return
+    saveStars(id, starsFor(mistakes))
+    recordPractice(missed, results.filter((r) => !r.missed).map((r) => r.subject))
   }, [finished])
 
   return (
@@ -352,12 +371,14 @@ export function Lesson({ id }: { id: string }) {
           {finished ? (
             <LessonDone
               stars={starsFor(mistakes)}
+              missed={missed}
               color={color}
               nextId={nextLessonId(id)}
               onAgain={() => {
                 setAttempt((a) => a + 1)
                 setIndex(0)
                 setMistakes(0)
+                setResults([])
               }}
               onBack={back}
             />
@@ -382,7 +403,7 @@ function LessonNote({ lesson, color, onClose }: { lesson: LessonData; color: str
         <Picture word={lesson.keyword!} size={fit(110, 0.16)} caption />
         <p className="note-sound">{letterHint(lesson.soundOf!)}</p>
         <button type="button" className="text-btn big" onClick={() => say(sound(lesson.soundOf!))}>
-          ▶ Hear the sound
+          {Icon.play} Hear the sound
         </button>
         <button type="button" className="text-btn" onClick={onClose}>
           Close
@@ -399,12 +420,14 @@ function nextLessonId(id: string): string | undefined {
 
 function LessonDone({
   stars,
+  missed,
   color,
   nextId,
   onAgain,
   onBack,
 }: {
   stars: number
+  missed: string[]
   color: string
   nextId?: string
   onAgain: () => void
@@ -415,16 +438,49 @@ function LessonDone({
     sfx.cheer()
     say(prompt('well-done'))
   }, [])
+  // Keep the list short enough to fit on a phone: a few words or sounds, or a couple of sentences.
+  const sentences = missed.filter((m) => m.startsWith('sentence:')).slice(0, window.innerHeight < 700 ? 1 : 2)
+  const shown = [...missed.filter((m) => !m.startsWith('sentence:')).slice(0, sentences.length ? 2 : window.innerHeight < 700 ? 4 : 6), ...sentences]
 
   return (
     <div className="activity done">
       <Confetti pieces={70} />
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 10 }}>
-        <Pip mood="cheer" size={fit(200, 0.28)} />
-      </motion.div>
-      <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="done-stars">
-        <Stars count={stars} size={64} />
-      </motion.div>
+      <div className="done-hero">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 10 }}>
+          <Pip mood={missed.length ? 'proud' : 'cheer'} size={Math.min(fit(170, 0.22), Math.round(window.innerWidth * 0.3))} />
+        </motion.div>
+        <div className="done-words">
+          <h2 className="done-title">{stars === 3 ? 'Amazing!' : stars === 2 ? 'Great work!' : 'You did it!'}</h2>
+          <div className="done-stars">
+            {[0, 1, 2].map((i) => (
+              <motion.span
+                key={i}
+                initial={{ scale: 0, rotate: -40 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.35 + i * 0.18, type: 'spring', stiffness: 260, damping: 12 }}
+              >
+                <Stars count={i < stars ? 1 : 0} max={1} size={fit(56, 0.075)} />
+              </motion.span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {shown.length ? (
+        <motion.section className="reflect" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }}>
+          <h3>You are getting stronger at these. Tap one to hear it again.</h3>
+          <div className="reflect-list">
+            {shown.map((key) => (
+              <PracticeChip key={key} subject={key} color={color} />
+            ))}
+          </div>
+        </motion.section>
+      ) : (
+        <motion.p className="reflect-clean" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }}>
+          {Icon.check} Everything right the first time!
+        </motion.p>
+      )}
+
       <div className="done-actions">
         <RoundButton label="Back to the map" onClick={onBack}>
           <span style={{ color }}>{Icon.home}</span>
@@ -439,5 +495,30 @@ function LessonDone({
         )}
       </div>
     </div>
+  )
+}
+
+/** One thing to practise again on the well-done screen: tap it to hear it. */
+function PracticeChip({ subject, color }: { subject: string; color: string }) {
+  const { say } = useVoice()
+  const at = subject.indexOf(':')
+  const kind = subject.slice(0, at)
+  const text = subject.slice(at + 1)
+  const w = kind === 'word' ? wordByText(text) : undefined
+  const hear = () =>
+    kind === 'sound' ? say(sound(text)) : kind === 'word' ? say(wordClip(text)) : say(...text.replace(/[.?!]/g, '').split(' ').map((t) => wordClip(t)))
+  return (
+    <motion.button type="button" className={`reflect-chip reflect-${kind}`} whileTap={{ scale: 0.93, y: 2 }} onClick={hear} aria-label={`Hear ${text}`}>
+      {w && hasPicture(w) && <Picture word={w} size={44} />}
+      {kind === 'sound' ? (
+        <span className="reflect-sound" style={{ background: color }}>
+          {text}
+        </span>
+      ) : kind === 'word' ? (
+        <WordText text={text} size={26} />
+      ) : (
+        <span className="reflect-sentence">{text}</span>
+      )}
+    </motion.button>
   )
 }

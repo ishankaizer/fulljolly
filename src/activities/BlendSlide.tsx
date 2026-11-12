@@ -142,7 +142,7 @@ export function BlendSlide({
               animate={{ left: ['2%', '70%'], opacity: [0, 1, 1, 0] }}
               transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 0.6, ease: 'easeInOut' }}
             >
-              👆
+              {Icon.hand}
             </motion.span>
           )}
           <motion.div

@@ -100,6 +100,7 @@ export function removeProfile(id: string) {
   if (s.current === id) s.current = s.list[0].id
   try {
     localStorage.removeItem(progressKey(id))
+    localStorage.removeItem(practiceKey(id))
   } catch {
     // nothing to clean up
   }
@@ -124,4 +125,25 @@ export function resetProgress(profileId = currentProfile().id) {
 }
 export function progressFor(profileId: string): Progress {
   return read<Progress>(progressKey(profileId), {})
+}
+
+// ---------- things to practise again ----------
+
+/** What a child needed more than one try at, with how many times: "word:cat", "sound:sh", "sentence:The cat sat." */
+export type Practice = Record<string, number>
+const practiceKey = (profileId: string) => `word-nest:practice:${profileId}`
+
+export function practiceFor(profileId = currentProfile().id): Practice {
+  return read<Practice>(practiceKey(profileId), {})
+}
+/** Note the things that took more than one try, and ease off the ones that went right first time. */
+export function recordPractice(missed: string[], right: string[]) {
+  const id = currentProfile().id
+  const practice = practiceFor(id)
+  for (const key of missed) practice[key] = (practice[key] ?? 0) + 1
+  for (const key of right) {
+    if (!practice[key] || missed.includes(key)) continue
+    if (--practice[key] <= 0) delete practice[key]
+  }
+  write(practiceKey(id), practice)
 }

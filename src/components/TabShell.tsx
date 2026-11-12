@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { go } from '../lib/router'
-import { currentProfile, getProfiles, switchProfile } from '../lib/settings'
+import { currentProfile, getProfiles, loadProgress, switchProfile } from '../lib/settings'
 import { ParentGate } from './ParentGate'
+import { Pic } from './Pic'
+import { Icon } from './ui'
 
 export type Tab = 'abc' | 'sounds' | 'words' | 'games' | 'books'
 
-const tabs: { id: Tab; label: string; icon: string; path: string }[] = [
-  { id: 'abc', label: 'A to Z', icon: '🔠', path: '/' },
-  { id: 'sounds', label: 'Sounds', icon: '🔤', path: '/sounds' },
-  { id: 'words', label: 'Words', icon: '🐱', path: '/words' },
-  { id: 'games', label: 'Games', icon: '🎮', path: '/games' },
-  { id: 'books', label: 'Books', icon: '📚', path: '/books' },
+const tabs: { id: Tab; label: string; icon: ReactNode; path: string; color: string }[] = [
+  { id: 'abc', label: 'A to Z', icon: Icon.tabAbc, path: '/', color: '#ff6b5e' },
+  { id: 'sounds', label: 'Sounds', icon: Icon.tabSounds, path: '/sounds', color: '#17b3a3' },
+  { id: 'words', label: 'Words', icon: Icon.tabWords, path: '/words', color: '#7c5cff' },
+  { id: 'games', label: 'Games', icon: Icon.tabGames, path: '/games', color: '#f29a12' },
+  { id: 'books', label: 'Books', icon: Icon.tabBooks, path: '/books', color: '#2e8bff' },
 ]
 
 /** Top bar (title, who is playing, grown-ups door) and the bottom tab bar shared by the main screens. */
@@ -20,6 +22,7 @@ export function TabShell({ tab, title, children }: { tab: Tab; title: string; ch
   const [gate, setGate] = useState(false)
   const profiles = getProfiles()
   const me = currentProfile()
+  const stars = Object.values(loadProgress()).reduce((a, b) => a + b, 0)
 
   return (
     <div className="screen tab-screen">
@@ -30,13 +33,17 @@ export function TabShell({ tab, title, children }: { tab: Tab; title: string; ch
           <h1 className="visually-hidden">Learning Circle: {title}</h1>
         </div>
         <div className="home-top-right">
+          <span className="star-count" aria-label={`${stars} stars`}>
+            {Icon.star}
+            {stars}
+          </span>
           <button
             type="button"
             className="avatar-btn"
             onClick={() => profiles.length > 1 && setPicking(true)}
             aria-label={`Playing as ${me.name}`}
           >
-            {me.avatar}
+            <Pic e={me.avatar} size={34} />
           </button>
           <GrownUpsDoor onOpen={() => setGate(true)} />
         </div>
@@ -53,6 +60,7 @@ export function TabShell({ tab, title, children }: { tab: Tab; title: string; ch
             key={t.id}
             type="button"
             className={`tab ${t.id === tab ? 'tab-active' : ''}`}
+            style={{ ['--accent' as string]: t.color }}
             onClick={() => go(t.path)}
             aria-label={t.label}
             aria-current={t.id === tab ? 'page' : undefined}
@@ -79,7 +87,9 @@ export function TabShell({ tab, title, children }: { tab: Tab; title: string; ch
                   }}
                   aria-label={p.name}
                 >
-                  <span className="picker-avatar">{p.avatar}</span>
+                  <span className="picker-avatar">
+                    <Pic e={p.avatar} size={64} />
+                  </span>
                   <span className="picker-name">{p.name}</span>
                 </button>
               ))}

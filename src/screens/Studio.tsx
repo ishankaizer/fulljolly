@@ -237,7 +237,7 @@ export function Studio() {
                         </button>
                         {url && (
                           <button type="button" className="sound-lib-play" onClick={() => listen(url)} aria-label={`Play ${i.name}`}>
-                            ▶
+                            {Icon.play}
                           </button>
                         )}
                       </div>
@@ -253,7 +253,7 @@ export function Studio() {
                     className={`studio-chip ${hasUserClip(i.key) ? 'studio-chip-done' : ''} ${g === 'prompts' ? 'studio-chip-wide' : ''}`}
                     onClick={() => setCurrent(i)}
                   >
-                    {hasUserClip(i.key) && <span aria-hidden>✓ </span>}
+                    {hasUserClip(i.key) && <span className="chip-check" aria-hidden>{Icon.check}</span>}
                     {g === 'rimes' ? `-${i.name}` : i.name}
                   </button>
                 ))}
@@ -498,7 +498,7 @@ function Recorder({ item, onClose, onSaved }: { item: RecordItem; onClose: () =>
           {phase === 'review' && draft && (
             <div className="rec-actions">
               <button type="button" className="text-btn big" onClick={() => play(draft.url)}>
-                ▶ Listen
+                {Icon.play} Listen
               </button>
               <div className="row">
                 <button type="button" className="text-btn big keep" onClick={keep} disabled={saving}>

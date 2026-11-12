@@ -125,7 +125,7 @@ export function AlphabetPage({ letter }: { letter: string }) {
               <figcaption>Small {letter}</figcaption>
             </figure>
           </div>
-          {complete && <p className="abc-complete">⭐ Page complete! Well done.</p>}
+          {complete && <p className="abc-complete">{Icon.star} Page complete! Well done.</p>}
         </section>
 
         <section className="abc-panel">

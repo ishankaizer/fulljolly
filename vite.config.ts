@@ -24,8 +24,8 @@ export default defineConfig({
         name: 'Learning Circle',
         short_name: 'Learning Circle',
         description: 'Phonics lessons from Yellow House Foundation School.',
-        theme_color: '#4cb5f5',
-        background_color: '#bfe8ff',
+        theme_color: '#fff8ea',
+        background_color: '#fff8ea',
         display: 'fullscreen',
         orientation: 'any',
         icons: [

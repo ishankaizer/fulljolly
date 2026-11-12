@@ -3,6 +3,7 @@ import { groups, type TabName } from '../data/course'
 import { go } from '../lib/router'
 import { loadProgress } from '../lib/settings'
 import { Stars } from './ui'
+import { Pic } from './Pic'
 
 /** The lesson cards for a tab, in colour-coded groups. */
 export function GroupGrid({ tab }: { tab: TabName }) {
@@ -21,11 +22,11 @@ export function GroupGrid({ tab }: { tab: TabName }) {
         >
           <div className="group-head">
             <span className="group-animal" aria-hidden>
-              {group.animals[0]}
+              <Pic e={group.animals[0]} size={48} />
             </span>
             <h2>{group.title}</h2>
             <span className="group-animal" aria-hidden>
-              {group.animals[1]}
+              <Pic e={group.animals[1]} size={48} />
             </span>
           </div>
           <div className="group-tiles">
@@ -41,7 +42,7 @@ export function GroupGrid({ tab }: { tab: TabName }) {
                   onClick={() => go(`/lesson/${l.id}`)}
                   aria-label={l.kind === 'sound' ? `Letter ${l.label}${l.caption ? ` as in ${l.caption}` : ''}` : l.label}
                 >
-                  <span className={`letter-card-letter letter-card-${size}`}>{text}</span>
+                  <span className={`letter-card-letter letter-card-${size}`}>{l.icon ? <Pic e={l.icon} size={56} /> : text}</span>
                   {l.caption && <span className="letter-card-caption">{l.caption}</span>}
                   <Stars count={progress[l.id] ?? 0} size={16} />
                 </motion.button>

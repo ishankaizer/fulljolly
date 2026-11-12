@@ -17,6 +17,7 @@ import {
   type Settings,
 } from '../lib/settings'
 import { Icon, RoundButton } from '../components/ui'
+import { Pic } from '../components/Pic'
 
 const groupsInOrder: ClipGroup[] = ['sounds', 'rimes', 'words', 'prompts']
 
@@ -131,21 +132,17 @@ export function GrownUps() {
             const stars = Object.values(progressFor(p.id)).reduce((a, b) => a + b, 0)
             return (
               <div key={p.id} className="profile-row">
-                <select
+                <button
+                  type="button"
                   className="profile-avatar"
-                  value={p.avatar}
-                  onChange={(e) => {
-                    updateProfile(p.id, { avatar: e.target.value })
+                  onClick={() => {
+                    updateProfile(p.id, { avatar: avatars[(avatars.indexOf(p.avatar) + 1) % avatars.length] })
                     rerender()
                   }}
-                  aria-label={`Picture for ${p.name}`}
+                  aria-label={`Change the picture for ${p.name}`}
                 >
-                  {avatars.map((a) => (
-                    <option key={a} value={a}>
-                      {a}
-                    </option>
-                  ))}
-                </select>
+                  <Pic e={p.avatar} size={36} />
+                </button>
                 <input
                   className="profile-name"
                   value={p.name}
@@ -155,7 +152,7 @@ export function GrownUps() {
                   }}
                   aria-label="Name"
                 />
-                <span className="profile-stars">⭐ {stars}</span>
+                <span className="profile-stars">{Icon.star} {stars}</span>
                 {p.id !== currentProfile().id && (
                   <button type="button" className="text-btn" onClick={() => { switchProfile(p.id); rerender() }}>
                     Play as

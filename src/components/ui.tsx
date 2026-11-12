@@ -4,14 +4,15 @@ import type { Vowel, Word } from '../data/curriculum'
 import { sfx } from '../lib/audio'
 import { shownPart } from '../data/graphemes'
 import { Art } from './art'
+import { Pic } from './Pic'
 import { Pip, type Mood } from './Pip'
 
 export const vowelColor: Record<Vowel, string> = {
-  a: '#ff7a45',
-  e: '#2fbf71',
-  i: '#9b6bff',
-  o: '#2f95d6',
-  u: '#f2a900',
+  a: '#ff6b5e',
+  e: '#2fb86a',
+  i: '#7c5cff',
+  o: '#2e8bff',
+  u: '#f29a12',
 }
 
 /** Vowel letters are drawn red. A combination (ai, oo, ar) counts as a vowel sound; qu and y do not. */
@@ -63,16 +64,14 @@ export function StaticTile({ letter, size = 'lg' }: { letter: string; size?: 'md
   )
 }
 
-/** The picture for a word: emoji, hand-drawn art, or (last resort) the word itself on a card. */
+/** The picture for a word: an illustration from the bundled set, hand-drawn art, or (last resort) the word itself on a card. */
 export function Picture({ word, size = 160, caption = false }: { word: Word; size?: number; caption?: boolean }) {
   return (
     <div className="picture" style={{ width: size, height: caption ? size + size * 0.34 : size }}>
       {word.art ? (
         <Art id={word.art} size={size * 0.74} />
       ) : word.pic ? (
-        <span className="picture-emoji" style={{ fontSize: size * 0.62 }}>
-          {word.pic}
-        </span>
+        <Pic e={word.pic} size={Math.round(size * 0.72)} className="picture-emoji" />
       ) : (
         <span className="picture-word" style={{ fontSize: size * 0.3 }}>
           {word.text}
@@ -147,7 +146,66 @@ export function RoundButton({
   )
 }
 
+const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' } as const
+
 export const Icon = {
+  tabAbc: (
+    <svg viewBox="0 0 28 28" width="28" height="28" {...stroke}>
+      <rect x="3.5" y="3.5" width="21" height="21" rx="6" />
+      <path d="M9.5 19l4.5-10 4.5 10M11.2 15.5h5.6" />
+    </svg>
+  ),
+  tabSounds: (
+    <svg viewBox="0 0 28 28" width="28" height="28" {...stroke}>
+      <path d="M4.5 11v6h4l5.5 4.5v-15L8.5 11z" fill="currentColor" fillOpacity=".18" />
+      <path d="M18 10.5a5 5 0 010 7M21 7.5a9.5 9.5 0 010 13" />
+    </svg>
+  ),
+  tabWords: (
+    <svg viewBox="0 0 28 28" width="28" height="28" {...stroke}>
+      <rect x="2.5" y="8" width="7" height="12" rx="2.5" />
+      <rect x="10.5" y="8" width="7" height="12" rx="2.5" fill="currentColor" fillOpacity=".18" />
+      <rect x="18.5" y="8" width="7" height="12" rx="2.5" />
+    </svg>
+  ),
+  tabGames: (
+    <svg viewBox="0 0 28 28" width="28" height="28" {...stroke}>
+      <path d="M8.5 8h11a6 6 0 016 6v1.5a4.5 4.5 0 01-8.2 2.5h-6.6a4.5 4.5 0 01-8.2-2.5V14a6 6 0 016-6z" fill="currentColor" fillOpacity=".18" />
+      <path d="M8.5 11.5v4M6.5 13.5h4" />
+      <circle cx="19" cy="13.5" r="1.3" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  tabBooks: (
+    <svg viewBox="0 0 28 28" width="28" height="28" {...stroke}>
+      <path d="M14 7.5C11.5 5.8 8 5.3 4 6v14.5c4-.7 7.5-.2 10 1.5 2.500-1.700 6-2.200 10-1.500V6c-4-.7-7.500-.200-10 1.500z" fill="currentColor" fillOpacity=".18" />
+      <path d="M14 7.5V22" />
+    </svg>
+  ),
+  check: (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12.5l4.500 4.500L19 7.500" />
+    </svg>
+  ),
+  play: (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+      <path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z" />
+    </svg>
+  ),
+  star: (
+    <svg viewBox="0 0 24 24" width="22" height="22">
+      <path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5L2.500 9.300l6.600-.8z" fill="#ffc93c" stroke="#dfa200" strokeWidth="1.2" strokeLinejoin="round" />
+    </svg>
+  ),
+  close: (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  ),
+  hand: (
+    <svg viewBox="0 0 48 48" width="44" height="44">
+      <path d="M20 4a4 4 0 014 4v13l10.500 2.200A6 6 0 0139 29.100V34a10 10 0 01-10 10h-4.500a10 10 0 01-8-4L9 30.500a3.500 3.500 0 015.600-4.200L16 28V8a4 4 0 014-4z" fill="#fff" stroke="#1c2b4f" strokeWidth="3" strokeLinejoin="round" />
+    </svg>
+  ),
   book: (
     <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5c-3.5-.5-6.5 0-8.5 1.5zM12 6.5v13" />
@@ -188,8 +246,8 @@ export function Stars({ count, max = 3, size = 22 }: { count: number; max?: numb
         <svg key={i} viewBox="0 0 24 24" width={size} height={size}>
           <path
             d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5L2.5 9.3l6.6-.8z"
-            fill={i < count ? '#ffc93c' : 'rgba(0,0,0,.12)'}
-            stroke={i < count ? '#e0a100' : 'none'}
+            fill={i < count ? '#ffc93c' : '#eadfc8'}
+            stroke={i < count ? '#dfa200' : 'none'}
             strokeWidth="1.2"
             strokeLinejoin="round"
           />
@@ -201,7 +259,7 @@ export function Stars({ count, max = 3, size = 22 }: { count: number; max?: numb
 
 /** Burst of confetti for a right answer or a finished lesson. */
 export function Confetti({ pieces = 40 }: { pieces?: number }) {
-  const colors = ['#ff7a45', '#2fbf71', '#9b6bff', '#2f95d6', '#ffc93c', '#ff6b9a']
+  const colors = ['#ff6b5e', '#2fb86a', '#7c5cff', '#2e8bff', '#ffc93c', '#17b3a3']
   return (
     <div className="confetti" aria-hidden>
       {Array.from({ length: pieces }, (_, i) => {
