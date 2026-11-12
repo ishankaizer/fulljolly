@@ -194,13 +194,70 @@ h2 {
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  background-image: radial-gradient(var(--paper-deep) 1.6px, transparent 1.6px);
-  background-size: 26px 26px;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 62%);
+  transition: background 0.6s;
 }
 .scenery svg {
   position: absolute;
+}
+.scene-sun {
+  top: 76px;
+  right: -44px;
+  width: clamp(120px, 20vw, 190px);
+}
+.scene-rays {
+  transform-origin: 100px 100px;
+  animation: spin 60s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.scene-cloud {
+  opacity: 0.9;
+  animation: cloud-drift linear infinite;
+  left: -260px;
+}
+.scene-cloud.c1 { top: 11%; width: 200px; animation-duration: 90s; }
+.scene-cloud.c2 { top: 36%; width: 140px; animation-duration: 120s; animation-delay: -60s; opacity: 0.7; }
+.scene-cloud.c3 { top: 62%; width: 170px; animation-duration: 105s; animation-delay: -30s; opacity: 0.6; }
+@keyframes cloud-drift {
+  to {
+    transform: translateX(calc(100vw + 520px));
+  }
+}
+.scene-float {
+  position: absolute;
+  font-family: var(--read);
+  font-weight: 700;
+  color: var(--theme);
+  opacity: 0.22;
+  line-height: 1;
+  rotate: var(--r);
+  animation: bob 5.5s ease-in-out infinite;
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.scene-hills {
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
-  height: 100%;
+  height: clamp(130px, 26vh, 260px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-cloud,
+  .scene-float,
+  .scene-rays {
+    animation: none;
+  }
+  .scene-cloud.c1 { left: 6%; }
+  .scene-cloud.c2 { left: 60%; }
+  .scene-cloud.c3 { left: 30%; }
 }
 
 /* ---------- home ---------- */

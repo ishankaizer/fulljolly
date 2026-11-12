@@ -26,15 +26,27 @@ window.addEventListener(
   { once: true },
 )
 
-// Pick up a new version as soon as one is deployed: check on launch, whenever the app comes back
-// to the front, and hourly. With autoUpdate the page reloads itself once the new version is ready.
+// Pick up a new version the moment it is deployed: check on launch, whenever the app comes back to the front
+// (or the network returns), and every ten minutes. With autoUpdate the new version takes over by itself, and the
+// page reloads once so nobody keeps looking at an old copy.
+const hadController = 'serviceWorker' in navigator && Boolean(navigator.serviceWorker.controller)
+if ('serviceWorker' in navigator && hadController) {
+  let reloaded = false
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloaded) return
+    reloaded = true
+    window.location.reload()
+  })
+}
 registerSW({
   immediate: true,
   onRegisteredSW(_url, registration) {
     if (!registration) return
     const check = () => void registration.update().catch(() => undefined)
     document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && check())
-    window.setInterval(check, 60 * 60 * 1000)
+    window.addEventListener('online', check)
+    window.addEventListener('focus', check)
+    window.setInterval(check, 10 * 60 * 1000)
   },
 })
 

@@ -34,9 +34,10 @@ export function App() {
   else if (page === 'book' && param && findBook(param)) screen = <BookScreen key={param} id={param} />
   else screen = <AlphabetHome />
 
+  const theme = ['abc', 'sounds', 'words', 'games', 'books'].includes(page ?? '') ? page : page === 'vowel' || page === 'sentences' ? 'words' : page === 'alphabet' || !page ? 'abc' : page === 'book' ? 'books' : page === 'lesson' ? 'meadow' : 'abc'
   return (
     <>
-      <Scenery />
+      <Scenery theme={theme} />
       {screen}
     </>
   )
