@@ -19,7 +19,7 @@ import {
   type Settings,
 } from '../lib/settings'
 import { allPages, describe, progressSummary, sections } from '../lib/routes'
-import { lockTeacher, whatsappLink, workLink } from '../lib/teacher'
+import { whatsappLink, workLink } from '../lib/teacher'
 import { wordByText } from '../data/vocab'
 import { Icon, Picture, RoundButton, WordText, hasPicture } from '../components/ui'
 import { Pic } from '../components/Pic'
