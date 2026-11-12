@@ -58,6 +58,20 @@ The old sky-and-meadow look was only a skeleton. Keep everything in this one lan
   took more than one try, each tappable to hear again. They are also saved per child (`recordPractice` in
   `src/lib/settings.ts`) for the teacher's progress view to come.
 
+## Student mode and teacher mode
+
+The app opens in **student mode**: children can play, switch to their own name, and nothing else. **Teacher mode** opens
+with a 4-digit PIN (chosen the first time; stored only as a hash, `src/lib/teacher.ts`, `src/components/PinPad.tsx`).
+It closes after ten quiet minutes, when the tab is closed, or on Lock. "Forgot your PIN?" asks a two-digit sum.
+The teacher desk (`src/screens/Teacher.tsx`, route `/teacher`; `/studio` and `/plan` are also teacher-only) has: Class
+(each child's progress by section and the words they needed more tries at), Class work, Sounds and voice, Setup.
+
+**Class-work links** need no server: the list of pages is encoded in the web address, `/#/work/<code>`
+(`workLink`/`parseWork` in `src/lib/teacher.ts`). Opening one shows the list with ticks; the back button of a page
+opened from it returns to the list (`setReturnTo`). While teacher mode is open a strip across the top
+(`src/components/TeacherBar.tsx`) offers Desk, Send page (WhatsApp), Copy link and Lock. Every page already has its own
+link, so any page can be sent.
+
 ## Bundled sounds
 
 `src/audio/sounds/` holds the 26 letter sounds and `qu` (Open Letter Sounds, CC0) plus `sh` and `ch` (cut from
@@ -110,10 +124,9 @@ sent "class work" to follow.
 - Record the sounds (the guided sound library and one-button sharing are built; waiting for the owner to finish the
   Vercel setup in `docs/PUBLISHING.md`, then the owner's mother records on her tablet).
 - "Record while you play a lesson" mode, so recordings are made in context with the lesson on screen.
-- **Overhaul steps still to do** (owner said "go" on the whole plan): teacher mode behind a PIN with class list,
-  per-child progress (use the saved practice lists), lesson locking and class-work links, with student mode as the
-  locked default; rebuilt and new games; vowel pages with story lines, connected stories, tests and quizzes;
-  streaks, stickers, share buttons, printable worksheets.
+- **Overhaul steps still to do** (owner said "go" on the whole plan): lesson locking (class-work links cover most of
+  the need); rebuilt and new games; vowel pages with story lines, connected stories, tests and quizzes; streaks,
+  stickers, printable worksheets.
 - Replace vague pictures with drawings (sat, vat, beg, fed, fit, wag, zip, men, and similar).
 - Bundled recordings for `th`, `ng` and the long vowels, in a voice that matches the letter sounds.
 - The owner allowed Figma AI credits (Rapido org file, page "Trash page temp dump") for generated images such as book

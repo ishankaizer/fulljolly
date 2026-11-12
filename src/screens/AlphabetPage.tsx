@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { findAlphabetPage, alphabet } from '../data/alphabet'
 import { wordByText } from '../data/vocab'
 import { sound, word } from '../lib/audio'
+import { getReturnTo } from '../lib/teacher'
 import { go } from '../lib/router'
 import { saveStars } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
@@ -44,7 +45,7 @@ export function AlphabetPage({ letter }: { letter: string }) {
   return (
     <div className="screen abc-page" style={{ ['--accent' as string]: color }}>
       <header className="lesson-top">
-        <RoundButton label="Back to A to Z" onClick={() => go('/')}>
+        <RoundButton label="Back to A to Z" onClick={() => go(getReturnTo() || '/')}>
           <span style={{ color }}>{Icon.back}</span>
         </RoundButton>
         <h1 className="abc-title" style={{ color }}>

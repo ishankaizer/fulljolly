@@ -33,7 +33,7 @@ export function Plan() {
   return (
     <div className="screen grown-ups">
       <header className="lesson-top">
-        <RoundButton label="Back" onClick={() => go('/grown-ups')}>
+        <RoundButton label="Back" onClick={() => go('/teacher')}>
           <span>{Icon.back}</span>
         </RoundButton>
         <h1>Lesson plan</h1>

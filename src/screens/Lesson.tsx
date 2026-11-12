@@ -38,6 +38,7 @@ import { VowelSwap } from '../activities/VowelSwap'
 import { Pip } from '../components/Pip'
 import { Confetti, Icon, Picture, RoundButton, Stars, WordText, fit, hasPicture, shuffle, vowelColor } from '../components/ui'
 import { go } from '../lib/router'
+import { getReturnTo } from '../lib/teacher'
 
 export const SWAP_LESSON = SWAP
 
@@ -310,7 +311,7 @@ export function Lesson({ id }: { id: string }) {
 
   const color = family ? vowelColor[family.unit.vowel] : course ? course.group.color : (games.find((g) => g.id === id)?.color ?? '#e85d8f')
   const finished = index >= steps.length
-  const back = () => go(family ? `/vowel/${family.unit.vowel}` : backTo(course?.lesson.kind))
+  const back = () => go(getReturnTo() || (family ? `/vowel/${family.unit.vowel}` : backTo(course?.lesson.kind)))
   const isSound = course?.lesson.kind === 'sound'
   const title = isSound
     ? `Lesson /${course!.lesson.label}/`

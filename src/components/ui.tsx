@@ -177,13 +177,50 @@ export const Icon = {
   ),
   tabBooks: (
     <svg viewBox="0 0 28 28" width="28" height="28" {...stroke}>
-      <path d="M14 7.5C11.5 5.8 8 5.3 4 6v14.5c4-.7 7.5-.2 10 1.5 2.500-1.700 6-2.200 10-1.500V6c-4-.7-7.500-.200-10 1.500z" fill="currentColor" fillOpacity=".18" />
+      <path d="M14 7.5C11.5 5.8 8 5.3 4 6v14.5c4-.7 7.5-.2 10 1.5 2.5-1.7 6-2.2 10-1.5V6c-4-.7-7.5-.200-10 1.5z" fill="currentColor" fillOpacity=".18" />
       <path d="M14 7.5V22" />
+    </svg>
+  ),
+  lock: (
+    <svg viewBox="0 0 24 24" width="24" height="24" {...stroke}>
+      <rect x="5" y="10.5" width="14" height="10" rx="3" fill="currentColor" fillOpacity=".18" />
+      <path d="M8 10.5V8a4 4 0 018 0v2.5" />
+    </svg>
+  ),
+  unlock: (
+    <svg viewBox="0 0 24 24" width="24" height="24" {...stroke}>
+      <rect x="5" y="10.5" width="14" height="10" rx="3" fill="currentColor" fillOpacity=".18" />
+      <path d="M8 10.5V8a4 4 0 017.5-2" />
+    </svg>
+  ),
+  gear: (
+    <svg viewBox="0 0 24 24" width="24" height="24" {...stroke}>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z" />
+    </svg>
+  ),
+  share: (
+    <svg viewBox="0 0 24 24" width="22" height="22" {...stroke}>
+      <circle cx="6" cy="12" r="2.6" />
+      <circle cx="18" cy="6" r="2.6" />
+      <circle cx="18" cy="18" r="2.6" />
+      <path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6" />
+    </svg>
+  ),
+  link: (
+    <svg viewBox="0 0 24 24" width="22" height="22" {...stroke}>
+      <path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1" />
+      <path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" />
+    </svg>
+  ),
+  plus: (
+    <svg viewBox="0 0 24 24" width="22" height="22" {...stroke} strokeWidth={3}>
+      <path d="M12 5v14M5 12h14" />
     </svg>
   ),
   check: (
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12.5l4.500 4.500L19 7.500" />
+      <path d="M5 12.5l4.5 4.5L19 7.5" />
     </svg>
   ),
   play: (
@@ -193,7 +230,7 @@ export const Icon = {
   ),
   star: (
     <svg viewBox="0 0 24 24" width="22" height="22">
-      <path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5L2.500 9.300l6.600-.8z" fill="#ffc93c" stroke="#dfa200" strokeWidth="1.2" strokeLinejoin="round" />
+      <path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5L2.5 9.3l6.6-.8z" fill="#ffc93c" stroke="#dfa200" strokeWidth="1.2" strokeLinejoin="round" />
     </svg>
   ),
   close: (
@@ -203,7 +240,7 @@ export const Icon = {
   ),
   hand: (
     <svg viewBox="0 0 48 48" width="44" height="44">
-      <path d="M20 4a4 4 0 014 4v13l10.500 2.200A6 6 0 0139 29.100V34a10 10 0 01-10 10h-4.500a10 10 0 01-8-4L9 30.500a3.500 3.500 0 015.600-4.200L16 28V8a4 4 0 014-4z" fill="#fff" stroke="#1c2b4f" strokeWidth="3" strokeLinejoin="round" />
+      <path d="M20 4a4 4 0 014 4v13l10.5 2.2A6 6 0 0139 29.1V34a10 10 0 01-10 10h-4.5a10 10 0 01-8-4L9 30.5a3.5 3.5 0 015.6-4.2L16 28V8a4 4 0 014-4z" fill="#fff" stroke="#1c2b4f" strokeWidth="3" strokeLinejoin="round" />
     </svg>
   ),
   book: (

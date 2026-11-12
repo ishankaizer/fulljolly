@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { findBook, isTricky, tokens } from '../data/books'
 import { allWords } from '../data/vocab'
 import { pause, prompt, sfx, word } from '../lib/audio'
+import { getReturnTo } from '../lib/teacher'
 import { go } from '../lib/router'
 import { saveStars } from '../lib/settings'
 import { useVoice } from '../lib/useVoice'
@@ -51,7 +52,7 @@ export function BookScreen({ id }: { id: string }) {
   return (
     <div className="screen lesson" style={{ ['--accent' as string]: book.color }}>
       <header className="lesson-top">
-        <RoundButton label="Back to the books" onClick={() => go('/books')}>
+        <RoundButton label="Back to the books" onClick={() => go(getReturnTo() || '/books')}>
           <span style={{ color: book.color }}>{Icon.back}</span>
         </RoundButton>
         <h1 className="lesson-title">{book.title}</h1>
@@ -115,7 +116,7 @@ export function BookScreen({ id }: { id: string }) {
                   <RoundButton label="Read it again" onClick={() => { setTheEnd(false); setPage(0) }}>
                     <span style={{ color: book.color }}>{Icon.again}</span>
                   </RoundButton>
-                  <RoundButton label="Back to the books" color={book.color} onClick={() => go('/books')}>
+                  <RoundButton label="Back to the books" color={book.color} onClick={() => go(getReturnTo() || '/books')}>
                     <span style={{ color: '#fff' }}>{Icon.home}</span>
                   </RoundButton>
                 </>
